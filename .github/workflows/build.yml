@@ -61,6 +61,10 @@ jobs:
     needs: UpdateGitTag
     runs-on: ubuntu-latest
     steps:
+      - name: Log tag exists
+        run: |
+          echo "${{ needs.UpdateGitTag.outputs.version_tag_exists }}""
+
       - name: Exit if current version is uploaded
         if: needs.UpdateGitTag.outputs.version_tag_exists != 'true'
         run: |
