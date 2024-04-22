@@ -56,10 +56,11 @@ jobs:
         id: check_tag
         run: |
           if git rev-parse --verify --quiet "${{ steps.define_tag.outputs.tag }}"; then
-            echo "::set-output name=tag_exists::true"
+            TAG_EXISTS=true
           else
-            echo "::set-output name=tag_exists::false"
+            TAG_EXISTS=false
           fi
+          echo "tag_exists=$TAG_EXISTS" >> $GITHUB_OUTPUT
 
       - name: Report if tag already exists
         if: steps.check_tag.outputs.tag_exists == 'true'
