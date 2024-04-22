@@ -35,7 +35,7 @@ jobs:
         run: |
           aws s3api wait object-exists \
             --bucket ${{ secrets.BUCKET_NAME}} \
-            --key ${{ secrets.DIST_ZIP_NAME }} \
+            --key ${{ secrets.DIST_ZIP_NAME }}-${{ inputs.version }} \
             --cli-read-timeout 60 \
             --cli-connect-timeout 60
       - name: Update Lambda Code
@@ -43,6 +43,6 @@ jobs:
           aws lambda update-function-code \
             --function-name=${{ secrets.LAMBDA_NAME }} \
             --s3-bucket=${{ secrets.BUCKET_NAME}} \
-            --s3-key=${{ secrets.DIST_ZIP_NAME }} \
+            --s3-key=${{ secrets.DIST_ZIP_NAME }}-${{ inputs.version }} \
             --cli-read-timeout 60 \
             --cli-connect-timeout 60
