@@ -14,6 +14,7 @@ permissions:
 jobs:
   DeployFromS3ToLambda:
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v1.7.0
