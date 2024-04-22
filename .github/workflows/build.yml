@@ -61,13 +61,10 @@ jobs:
     needs: UpdateGitTag
     runs-on: ubuntu-latest
     steps:
-      - name: Log tag exists
-        run: |
-          echo "${{ needs.UpdateGitTag.outputs.version_tag_exists }}""
-
       - name: Exit if current version is uploaded
-        if: needs.UpdateGitTag.outputs.version_tag_exists != 'true'
         run: |
+          echo "Tag for current version already exists: ${{ needs.UpdateGitTag.outputs.version_tag_exists }}"
+          if ${{ needs.UpdateGitTag.outputs.version_tag_exists }} = "true"
           echo "Version is already tagged and uploaded to S3. Exiting."
           exit 0
 
