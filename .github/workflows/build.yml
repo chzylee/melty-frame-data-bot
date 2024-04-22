@@ -29,6 +29,6 @@ jobs:
       - name: Zip files
         run: |
           cd src
-          zip -r ${{ secrets.DIST_ZIP_NAME }} *.py commands
+          zip -r ../${{ secrets.DIST_ZIP_NAME }} *.py commands
       - name: Deploy to S3
-        run: aws s3 cp meltyframedatabot.zip s3://${{ secrets.BUCKET_NAME }}
+        run: aws s3 cp ${{ secrets.DIST_ZIP_NAME }} s3://${{ secrets.BUCKET_NAME }}
