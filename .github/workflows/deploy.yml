@@ -37,7 +37,7 @@ jobs:
       - name: Set S3 Key
         id: set_s3_key
         run: |
-          FILENAME=${{ secrets.DIST_ZIP_NAME }}-${{env.VERSION}}.zip
+          FILENAME=${{ secrets.DIST_ZIP_NAME }}-${{ inputs.version }}.zip
           echo "filename=$FILENAME" >> $GITHUB_OUTPUT
           echo "Filename set as $FILENAME"
 
