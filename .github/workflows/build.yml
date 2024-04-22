@@ -51,6 +51,7 @@ jobs:
         run: |
           TAG=refs/tags/${{ env.VERSION }}
           echo "tag=$TAG" >> $GITHUB_OUTPUT
+          echo "tag=$TAG"
 
       - name: Git clone the repository
         uses: actions/checkout@v3
@@ -58,7 +59,7 @@ jobs:
       - name: Check if tag exists
         id: check_tag
         run: |
-          if git rev-parse --verify --quiet "${{ steps.define_tag.outputs.tag }}"; then
+          if git tag -l "${{ steps.define_tag.outputs.tag }}" | grep -q "${{ steps.define_tag.outputs.tag }}"; then
             TAG_EXISTS=true
           else
             TAG_EXISTS=false
