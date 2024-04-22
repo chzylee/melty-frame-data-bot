@@ -1,37 +1,34 @@
 from nacl.signing import VerifyKey
 from nacl.exceptions import BadSignatureError
-
-PUBLIC_KEY = 'f65af3e8f227b4a24e3abe88ab35835cf20a9523ee3b6b43054c309ffaac588d' # found on Discord Application -> General Information page
-PING_PONG = { 'type': 1 }
-RESPONSE_TYPES =  { 
-                    'PONG': 1, 
-                    'ACK_NO_SOURCE': 2, 
-                    'MESSAGE_NO_SOURCE': 3, 
-                    'MESSAGE_WITH_SOURCE': 4, 
-                    'ACK_WITH_SOURCE': 5
-                  }
+import constants
+import logger
+import poronga
 
 def verify_signature(event):
-    raw_body = event['rawBody']
-    verify_key = VerifyKey(bytes.fromhex(PUBLIC_KEY))
-    auth_sig = event['params']['header'].get('x-signature-ed25519')
-    auth_ts  = event['params']['header'].get('x-signature-timestamp')
+    raw_body = event["rawBody"]
+    verify_key = VerifyKey(bytes.fromhex(constants.PUBLIC_KEY))
+    auth_sig = event["params"]["header"].get("x-signature-ed25519")
+    auth_ts  = event["params"]["header"].get("x-signature-timestamp")
     
     try:
-        verify_key.verify(f'{auth_ts}{raw_body}'.encode(), bytes.fromhex(auth_sig))
+        verify_key.verify(f"{auth_ts}{raw_body}".encode(), bytes.fromhex(auth_sig))
     except BadSignatureError:
-        raise Exception('Verification failed')
+        raise Exception("Verification failed")
 
-    # message = auth_ts.encode() + raw_body.encode()
-    # verify_key = VerifyKey(bytes.fromhex(PUBLIC_KEY))
-    # verify_key.verify(message, bytes.fromhex(auth_sig)) # raises an error if unequal
+
+def is_lambda_request_event(event):
+    if event["body-json"]:
+        return True
+    return False
+
 
 def is_ping_pong(body):
-    if body['type']:
-        if body['type'] == 1:
+    if body["type"]:
+        if body["type"] == 1:
             return True
     return False
-    
+
+
 def lambda_handler(event, context):
     print(f"event {event}") # debug print
     
@@ -41,23 +38,34 @@ def lambda_handler(event, context):
     except Exception as e:
         raise Exception(f"[UNAUTHORIZED] Invalid request signature: {e}")
 
-    # check if message is a ping
-    if 'body-json' in event:
-        body = event['body-json']
-        if is_ping_pong(body):
-            print("is_ping_pong: True")
-            print(f'returning {PING_PONG}')
-            return PING_PONG
-        else:
-            print('Found body-json, not type == 1')
+    if not is_lambda_request_event(event):
+        return { "message": "Request is not Lambda event: 'body-json' not found" }
     
-    # dummy return
-    return {
-            "type": RESPONSE_TYPES['MESSAGE_NO_SOURCE'],
-            "data": {
-                "tts": False,
-                "content": "Test Received",
-                "embeds": [],
-                "allowed_mentions": []
-            }
+    body = event["body-json"]
+    reponse = None
+
+    if is_ping_pong(body):
+        print("is_ping_pong: True")
+        response = constants.PING_PONG
+    else:
+        data = body["data"]
+        command_name = data["name"]
+        message_content = None
+
+        if command_name == "poronga":
+            logger.log_command(command_name=command_name)
+            message_content = poronga.use_poronga()
+        elif command_name == "echo":
+            logger.log_command(command_name=command_name)
+            original_message = data["options"][0]["value"]
+            message_content = f"Echoing: {original_message}"
+
+        if message_content == None:
+            logger.log_error(constants.COMMAND_NAME_ERROR_MESSAGE)
+
+        response = {
+            "type": constants.RESPONSE_TYPES["MESSAGE_WITH_SOURCE"],
+            "data": { "content": message_content },
         }
+
+    return response
