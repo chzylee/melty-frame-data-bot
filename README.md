@@ -8,11 +8,10 @@ This bot runs via AWS Lambda hooked into a Discord bot via Interactions Endpoint
 
 PyNaCl was imported for verification with Discord via Lambda Layers. The Layer consumes nacl.zip from S3, which is a zipped PyNaCl installed and packaged on EC2 instance via Python 3.8.
 
-### Poronga
+### File Organization
 
-Poronga exists as the starting point for the project. The Python code is the boilerplate to verify a Discord bot ping, and this was used as the first entry to the Lambda.
-
-This was created following tutorial for setting up a serverless Discord bot [here](https://oozio.medium.com/serverless-discord-bot-55f95f26f743).
+- [lambda_function.py](./src/lambda_function.py) is the entry point to the Lambda (following AWS default standard).
+- Command logic will go in [/commands](./src/commands/); however, commands are still imported as `import poronga` (for commands/poronga.py) as zipping will flatten the file structure for successful import. This done to keep code organized.
 
 ## Update Commands
 
