@@ -20,15 +20,18 @@ jobs:
     steps:
       - name: Git clone the repository
         uses: actions/checkout@v3
+
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v1.7.0
         with:
           role-to-assume: ${{ secrets.S3_ROLE_ARN }}
           role-session-name: GitHub_to_AWS_via_FederatedOIDC
           aws-region: ${{ secrets.AWS_REGION }}
+
       - name: Sts GetCallerIdentity
         run: |
           aws sts get-caller-identity
+
       - name: Zip files
         id: zip_files
         run: |
@@ -36,15 +39,38 @@ jobs:
           echo "filename=$FILENAME" >> $GITHUB_OUTPUT
           cd src
           zip -r ../$FILENAME *.py commands
+
       - name: Deploy to S3
         run: aws s3 cp ${{ steps.zip_files.outputs.filename }} s3://${{ secrets.BUCKET_NAME }}
+
+  UpdateGitTag:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Define tag
+        id: define_tag
+        run: |
+          TAG=refs/tags/${{ env.VERSION }}
+          echo "tag=$TAG" >> $GITHUB_OUTPUT
+
+      - name: Check if tag exists
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const tagResponse = await github.rest.git.getRef({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              ref: '${{ steps.define_tag.outputs.tag }}'
+            });
+            core.setOutput('tag_exists', !!tagResponse.data);
+
       - name: Create Git tag
+        if: steps.check_tag.outputs.tag_exists != 'true'
         uses: actions/github-script@v6
         with:
           script: |
             github.rest.git.createRef({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              ref: 'refs/tags/${{ env.VERSION }}',
+              ref: '${{ steps.define_tag.outputs.tag }}',
               sha: context.sha
             })
