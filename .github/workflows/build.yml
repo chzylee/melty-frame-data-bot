@@ -59,11 +59,12 @@ jobs:
       - name: Check if tag exists
         id: check_tag
         run: |
-          if git rev-parse --quiet --verify "${{ steps.define_tag.outputs.tag }}" >/dev/null 2>&1; then
-            echo "Tag ${{ steps.define_tag.outputs.tag }} exists."
+          git tag -l "${{ env.VERSION }}" | grep -e "${{ env.VERSION }}"
+          if git tag -l "${{ env.VERSION }}" | grep "${{ env.VERSION }}"; then
+            echo "Tag '${{ env.VERSION }}' exists."
             TAG_EXISTS=true
           else
-            echo "Tag ${{ steps.define_tag.outputs.tag }} does not exist."
+            echo "Tag '${{ env.VERSION }}' does not exist."
             TAG_EXISTS=false
           fi
           echo "tag_exists=$TAG_EXISTS" >> $GITHUB_OUTPUT
