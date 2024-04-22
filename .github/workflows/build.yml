@@ -53,15 +53,18 @@ jobs:
           echo "tag=$TAG" >> $GITHUB_OUTPUT
 
       - name: Check if tag exists
-        uses: actions/github-script@v6
-        with:
-          script: |
-            const tagResponse = await github.rest.git.getRef({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              ref: '${{ steps.define_tag.outputs.tag }}'
-            });
-            core.setOutput('tag_exists', !!tagResponse.data);
+        id: check_tag
+        run: |
+          if git rev-parse --verify --quiet "${{ steps.define_tag.outputs.tag }}"; then
+            echo "::set-output name=tag_exists::true"
+          else
+            echo "::set-output name=tag_exists::false"
+          fi
+
+      - name: Report if tag already exists
+        if: steps.check_tag.outputs.tag_exists == 'true'
+        run: |
+          echo "Git Tag ${{ steps.define_tag.outputs.tag }} already exists. Not creating new tag."
 
       - name: Create Git tag
         if: steps.check_tag.outputs.tag_exists != 'true'
