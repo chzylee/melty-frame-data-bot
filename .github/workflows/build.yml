@@ -28,6 +28,7 @@ jobs:
           aws sts get-caller-identity
       - name: Zip files
         run: |
-          zip -r ${{ secrets.DIST_ZIP_NAME }} src/*.py src/commands
+          cd src
+          zip -r ${{ secrets.DIST_ZIP_NAME }} *.py commands
       - name: Deploy to S3
         run: aws s3 cp meltyframedatabot.zip s3://${{ secrets.BUCKET_NAME }}
