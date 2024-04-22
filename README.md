@@ -16,7 +16,7 @@ This was created following tutorial for setting up a serverless Discord bot [her
 
 ## Update Commands
 
-[update_commands.py](./update_commands.py) is a script calling the endpoint needed in order to update Slash Commands. As of April 2024, these are only updateable via request to this endpoint. Script will be update/run as needed.
+[update_commands.py](./command-management/update_commands.py) is a script calling the endpoint needed in order to update Slash Commands. As of April 2024, these are only updateable via request to this endpoint. Script will be update/run as needed. This has been based on guide [here](https://www.youtube.com/watch?v=BmtMr6Nmz9k).
 
 ## Assets
 
