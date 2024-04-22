@@ -2,7 +2,7 @@ from nacl.signing import VerifyKey
 from nacl.exceptions import BadSignatureError
 import constants
 import logger
-import poronga
+from commands import teatime
 
 def verify_signature(event):
     raw_body = event["rawBody"]
@@ -52,13 +52,9 @@ def lambda_handler(event, context):
         command_name = data["name"]
         message_content = None
 
-        if command_name == "poronga":
+        if command_name == "teatime":
             logger.log_command(command_name=command_name)
-            message_content = poronga.use_poronga()
-        elif command_name == "echo":
-            logger.log_command(command_name=command_name)
-            original_message = data["options"][0]["value"]
-            message_content = f"Echoing: {original_message}"
+            message_content = teatime.have_teatime()
 
         if message_content == None:
             logger.log_error(constants.COMMAND_NAME_ERROR_MESSAGE)
