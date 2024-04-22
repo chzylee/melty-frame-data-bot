@@ -60,13 +60,13 @@ jobs:
   BuildAndUploadToS3:
     needs: UpdateGitTag
     runs-on: ubuntu-latest
+    if: ${{ needs.UpdateGitTag.outputs.version_tag_exists }} == 'true'
     steps:
       - name: Exit if current version is uploaded
         run: |
           echo "Tag for current version already exists: ${{ needs.UpdateGitTag.outputs.version_tag_exists }}"
           if ${{ needs.UpdateGitTag.outputs.version_tag_exists }} = "true"; then
             echo "Version is already tagged and uploaded to S3. Exiting."
-            exit 0
           else 
             echo "Version is not yet uploaded to S3. Proceeding with build and upload"
           fi
