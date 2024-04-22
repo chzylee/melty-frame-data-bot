@@ -33,8 +33,8 @@ jobs:
       - name: Check if tag exists
         id: check_tag
         run: |
-          echo $(git tag -l "${{ env.VERSION }}")
-          if git tag -l "${{ env.VERSION }}" | grep "${{ env.VERSION }}"; then
+          echo $(git rev-parse --quiet --verify "refs/tags/${{ env.VERSION }}")
+          if git rev-parse --quiet --verify "refs/tags/${{ env.VERSION }}"; then
             echo "Tag '${{ env.VERSION }}' exists."
             TAG_EXISTS=true
           else
