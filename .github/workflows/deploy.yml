@@ -9,7 +9,8 @@ on:
         required: true
 
 permissions:
-  contents: read # This is required for reading secrets
+  id-token: write # This is required for requesting the JWT
+  contents: read # This is required for actions/checkout and tag creation
 jobs:
   DeployFromS3ToLambda:
     runs-on: ubuntu-latest
