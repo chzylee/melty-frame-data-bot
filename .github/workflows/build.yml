@@ -59,6 +59,7 @@ jobs:
       - name: Check if tag exists
         id: check_tag
         run: |
+          git tag -l "${{ steps.define_tag.outputs.tag }}" | grep -q "${{ steps.define_tag.outputs.tag }}"
           if git tag -l "${{ steps.define_tag.outputs.tag }}" | grep -q "${{ steps.define_tag.outputs.tag }}"; then
             TAG_EXISTS=true
           else
