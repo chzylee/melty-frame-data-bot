@@ -8,6 +8,8 @@ on:
         type: string
         required: true
 
+permissions:
+  contents: read # This is required for reading secrets
 jobs:
   DeployFromS3ToLambda:
     runs-on: ubuntu-latest
