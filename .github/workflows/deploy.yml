@@ -25,24 +25,34 @@ jobs:
               repo: context.repo.repo,
               ref: 'tags/${{ inputs.version }}'
             });
+
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v1.7.0
         with:
           role-to-assume: ${{ secrets.S3_ROLE_ARN }}
           role-session-name: GitHub_to_AWS_via_FederatedOIDC
           aws-region: ${{ secrets.AWS_REGION }}
+
+      # S3 Key should match filename. This should change in build.yml too if this must change.
+      - name: Set S3 Key
+        id: set_s3_key
+        run: |
+          FILENAME=${{ secrets.DIST_ZIP_NAME }}-${{env.VERSION}}.zip
+          echo "filename=$FILENAME" >> $GITHUB_OUTPUT
+
       - name: Check S3 bucket
         run: |
           aws s3api wait object-exists \
             --bucket ${{ secrets.BUCKET_NAME}} \
-            --key ${{ secrets.DIST_ZIP_NAME }}-${{ inputs.version }} \
+            --key ${{ steps.set_s3_key.outputs.filename }} \
             --cli-read-timeout 60 \
             --cli-connect-timeout 60
+
       - name: Update Lambda Code
         run: |
           aws lambda update-function-code \
             --function-name=${{ secrets.LAMBDA_NAME }} \
             --s3-bucket=${{ secrets.BUCKET_NAME}} \
-            --s3-key=${{ secrets.DIST_ZIP_NAME }}-${{ inputs.version }} \
+            --s3-key=${{ steps.set_s3_key.outputs.filename }} \
             --cli-read-timeout 60 \
             --cli-connect-timeout 60
