@@ -39,6 +39,7 @@ jobs:
         run: |
           FILENAME=${{ secrets.DIST_ZIP_NAME }}-${{env.VERSION}}.zip
           echo "filename=$FILENAME" >> $GITHUB_OUTPUT
+          echo "Filename set as $FILENAME"
 
       - name: Check S3 bucket
         run: |
