@@ -2,6 +2,7 @@ from nacl.signing import VerifyKey
 from nacl.exceptions import BadSignatureError
 import constants
 import logger
+from data_helpers import converters
 from commands import teatime, framedata
 
 def verify_signature(event):
@@ -74,6 +75,8 @@ def lambda_handler(event, context):
         }
         
         if len(embeds) > 0:
-            response["embeds"] = embeds
+            for embed in embeds:
+                embed_json = converters.convert_embed_to_json(embed)
+                response["embeds"].append(embed_json)
 
     return response
