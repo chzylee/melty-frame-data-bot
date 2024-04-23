@@ -59,6 +59,7 @@ def lambda_handler(event, context):
                 message_content = teatime.have_teatime()
             elif command_name == "framedata":
                 char_move = framedata.get_char_and_move(data)
+                message_content = framedata.get_move_message(char_move)
                 embeds.append(framedata.get_frame_data(char_move))
 
             if message_content == None:
