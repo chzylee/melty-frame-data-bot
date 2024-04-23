@@ -72,7 +72,7 @@ def lambda_handler(event, context):
             "data": { "content": message_content },
         }
         
-        if embeds.count > 0:
+        if len(embeds) > 0:
             response["embeds"] = embeds
 
     return response
