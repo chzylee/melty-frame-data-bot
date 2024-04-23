@@ -114,7 +114,7 @@ jobs:
           FILENAME=${{ secrets.DIST_ZIP_NAME }}-${{env.VERSION}}.zip
           echo "filename=$FILENAME" >> $GITHUB_OUTPUT
           cd src
-          zip -r ../$FILENAME *.py commands
+          zip -r ../$FILENAME *.py commands data_helpers
         # Put file in starting working directory.
 
       - name: Deploy to S3
