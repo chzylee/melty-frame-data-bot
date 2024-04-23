@@ -1,3 +1,15 @@
 - name: teatime
   description: Test command.
   options: []
+
+- name: framedata
+  description: Gets frame data of the given char + move from Mizuumi.
+  options:
+    - name: character
+      description: Character to get frame data for.
+      type: 3 # string
+      required: true
+    - name: move
+      description: Move of the character to get frame data for.
+      type: 3 # string
+      required: true

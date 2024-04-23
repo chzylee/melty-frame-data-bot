@@ -58,7 +58,8 @@ def lambda_handler(event, context):
             if command_name == "teatime":
                 message_content = teatime.have_teatime()
             elif command_name == "framedata":
-                embeds.append(framedata.get_frame_data())
+                char_move = framedata.get_char_and_move(data)
+                embeds.append(framedata.get_frame_data(char_move))
 
             if message_content == None:
                 logger.log_error(constants.COMMAND_NAME_ERROR_MESSAGE)

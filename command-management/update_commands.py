@@ -6,10 +6,10 @@ SERVER_ID = local_env.SERVER_ID
 TOKEN = local_env.BOT_TOKEN
 APPLICATION_ID = "1231490345565683814"
 
-URL = f"https://discord.com/api/v10/applications/{APPLICATION_ID}/guilds/{SERVER_ID}/commands"
+# URL = f"https://discord.com/api/v10/applications/{APPLICATION_ID}/guilds/{SERVER_ID}/commands"
 
 # global commands are cached and only update every hour
-# URL = f'https://discord.com/api/v10/applications/{APPLICATION_ID}/commands'
+URL = f'https://discord.com/api/v10/applications/{APPLICATION_ID}/commands'
 
 with open("bot_commands.yaml", "r") as file:
     yaml_content = file.read()
