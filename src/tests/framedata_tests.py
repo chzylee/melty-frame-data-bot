@@ -1,7 +1,7 @@
 import unittest
 from discord import Embed
-from app.commands import framedata
-from app.commands.data.types import MeltyMove
+from commands import framedata
+from commands.data.types import MeltyMove
 
 class TestFrameData(unittest.TestCase):
     def test_get_char_and_move_given_valid_event_data_returns_correct_MeltyMove(self):
