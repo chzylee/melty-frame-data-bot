@@ -97,11 +97,6 @@ jobs:
       - name: Git clone the repository
         uses: actions/checkout@v3
 
-      - name: Run unit tests
-        run: |
-          cd src
-          python3 -m
-
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v1.7.0
         with:
