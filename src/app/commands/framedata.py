@@ -1,6 +1,6 @@
 import requests
 from discord import Embed
-from app.commands.data.types import MeltyMove
+from commands.data.types import MeltyMove
 
 def get_char_and_move(data: dict) -> MeltyMove:
     char_name = data["options"][0]["value"] # Char is first option
