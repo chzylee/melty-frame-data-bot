@@ -80,7 +80,7 @@ jobs:
             })
 
   BuildAndUploadToS3:
-    needs: UpdateGitTag
+    needs: [RunUnitTests, UpdateGitTag]
     runs-on: ubuntu-latest
     if: ${{ needs.UpdateGitTag.outputs.version_tag_exists }} != 'true'
     steps:
