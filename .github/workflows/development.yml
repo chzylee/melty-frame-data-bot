@@ -14,10 +14,11 @@ permissions:
   contents: write # This is required for actions/checkout and tag creation
 
 jobs:
-  SetFilename:
+  SetupParameters:
     runs-on: ubuntu-latest
     outputs:
       filename: ${{ steps.set_filename.outputs.filename }}
+      lambda_name: ${{ steps.set_lambda_name.outputs.lambda_name }}
     steps:
       - name: Set filename
         id: set_filename
@@ -25,25 +26,32 @@ jobs:
           FILENAME=${{ secrets.DIST_ZIP_NAME }}-${{ env.VERSION }}-${{ env.ENV }}
           echo "filename=$FILENAME" >> $GITHUB_OUTPUT
           echo "Package filename: $FILENAME"
+      - name: Set Lambda name
+        id: set_lambda_name
+        run: |
+          LAMBDA_NAME=${{ secrets.LAMBDA_NAME }}
+          echo "lambda_name=$LAMBDA_NAME" >> $GITHUB_OUTPUT
+          echo "Lambda name: $LAMBDA_NAME"
+        # Setup as parameter here to eventually suport deploying to different Lambda for dev.
 
   RunUnitTests:
     uses: ./.github/workflows/unit_test.yml
 
   Build:
-    needs: [SetFilename, RunUnitTests]
+    needs: [SetupParameters, RunUnitTests]
     uses: ./.github/workflows/build.yml
     with:
       env: ${{ inputs.env }}
       version: ${{ inputs.version }}
-      filename: ${{ needs.SetFilename.outputs.filename }}
+      filename: ${{ needs.SetupParameters.outputs.filename }}
     secrets: inherit
 
   Deploy:
-    needs: [SetFilename, RunUnitTests, Build]
+    needs: [SetupParameters, RunUnitTests, Build]
     uses: ./.github/workflows/deploy.yml
     with:
       env: ${{ inputs.env }}
       version: ${{ inputs.version }}
-      filename: ${{ needs.SetFilename.outputs.filename }}
-      lambda_name: ${{ secrets.LAMBDA_NAME }}
+      filename: ${{ needs.SetupParameters.outputs.filename }}
+      lambda_name: ${{ needs.SetupParameters.outputs.lambda_name }}
     secrets: inherit
