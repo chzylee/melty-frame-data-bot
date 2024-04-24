@@ -23,7 +23,7 @@ jobs:
           ref: ${{ github.ref }}
 
       - name: Test
-        uses: ./.github/templates/unit_test.yml
+        uses: .github/templates/unit_test.yml
 
       - name: Set distributable filename
         id: set_filename
@@ -33,14 +33,14 @@ jobs:
           echo "Package filename: $FILENAME"
 
       - name: Build
-        uses: ./.github/templates/build.yml
+        uses: .github/templates/build.yml
         with:
           env: ${{ inputs.env }}
           version: ${{ inputs.version }}
           filename: ${{ steps.set_filename.outputs.filename }}
 
       - name: Deploy
-        uses: ./.github/templates/deploy.yml
+        uses: .github/templates/deploy.yml
         with:
           env: ${{ inputs.env }}
           version: ${{ inputs.version }}
