@@ -9,7 +9,6 @@ on:
 
 env:
   ENV: 'prod' # Environment should be static for each env's .yml file.
-  VERSION: '1.0.4' # Increment as needed. Need to update version for pipeline to create release.
   APP_NAME: 'meltyframedatabot'
   LAMBDA_NAME: 'fgc-aacc-meltyframedatabot'
 
@@ -29,10 +28,11 @@ jobs:
       # Setup parameters in job because you cannot directly pass variables into input.
       - name: Set parameters
         id: set_params
+        # Obtain version from tag name for prod releases.
         run: |
           ENV=${{ env.ENV }}
-          VERSION=${{ env.VERSION }}
-          FILENAME=${{ env.APP_NAME }}-${{ env.VERSION }}-${{ env.ENV }}
+          VERSION=${{ github.ref#refs/tags/ }}
+          FILENAME=${{ env.APP_NAME }}-$VERSION-$ENV
           LAMBDA_NAME=${{ env.LAMBDA_NAME }}
           echo "env=$ENV" >> $GITHUB_OUTPUT
           echo "version=$VERSION" >> $GITHUB_OUTPUT
