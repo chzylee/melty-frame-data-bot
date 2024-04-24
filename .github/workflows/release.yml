@@ -39,12 +39,16 @@ jobs:
           echo "branch=$BRANCH" >> $GITHUB_OUTPUT
           echo "Branch: $BRANCH"
       - name: Exit if not on main branch
-        if: endsWith(${{ steps.extract_branch.outputs.branch }}, 'main') == false
         run: |
-          echo "Extracted branch: ${{steps.extract_branch.outputs.branch}}"
-          echo "Branch ends with main: ${{ endsWith(steps.extract_branch.outputs.branch, 'main')}}"
-          echo "Releases can only run for tags pushed to main branch"
-          exit 1
+          if ${{ endsWith(steps.extract_branch.outputs.branch, 'main')}} == false;
+          then
+            echo "Extracted branch: ${{steps.extract_branch.outputs.branch}}"
+            echo "Branch ends with main: ${{ endsWith(steps.extract_branch.outputs.branch, 'main')}}"
+            echo "Releases can only run for tags pushed to main branch"
+            exit 1
+          else
+            echo "Tag pushed to main branch. Proceeding with deployment."
+          fi
       # Setup parameters in job because you cannot directly pass variables into input.
       - name: Set parameters
         id: set_params
