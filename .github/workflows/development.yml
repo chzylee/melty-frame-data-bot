@@ -14,40 +14,36 @@ permissions:
   contents: write # This is required for actions/checkout and tag creation
 
 jobs:
-  RunDevPipeline:
+  SetFilename:
     runs-on: ubuntu-latest
+    outputs:
+      filename: ${{ steps.set_filename.outputs.filename }}
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-        with:
-          ref: ${{ github.ref }}
-
-      - name: Check workspace
-        run: |
-          ls
-          ls ./.github/templates
-          ls ./.github/templates/test
-
-      - name: Test
-        uses: ./.github/templates/test/unit_test.yml
-
-      - name: Set distributable filename
+      - name: Set filename
         id: set_filename
         run: |
           FILENAME=${{ secrets.DIST_ZIP_NAME }}-${{ env.VERSION }}-${{ env.ENV }}.zip
           echo "filename=$FILENAME" >> $GITHUB_OUTPUT
           echo "Package filename: $FILENAME"
+          
+  RunUnitTests:
+    runs-on: ubuntu-latest
+    uses: ./.github/templates/test/unit_test.yml
+    
+  Build:
+    runs-on: ubuntu-latest
+    needs: [SetFilename, RunUnitTests]
+    uses: ./.github/templates/build/build.yml
+      with:
+        env: ${{ inputs.env }}
+        version: ${{ inputs.version }}
+        filename: ${{ needs.SetFilename.outputs.filename }}
 
-      - name: Build
-        uses: ./.github/templates/build/build.yml
-        with:
-          env: ${{ inputs.env }}
-          version: ${{ inputs.version }}
-          filename: ${{ steps.set_filename.outputs.filename }}
-
-      - name: Deploy
-        uses: ./.github/templates/deploy/deploy.yml
-        with:
-          env: ${{ inputs.env }}
-          version: ${{ inputs.version }}
-          filename: ${{ steps.set_filename.outputs.filename }}
+  Deploy:
+    runs-on: ubuntu-latest
+    needs: [SetFilename, RunUnitTests, Build]
+    uses: ./.github/templates/deploy/deploy.yml
+    with:
+      env: ${{ inputs.env }}
+      version: ${{ inputs.version }}
+      filename: ${{ needs.SetFilename.outputs.filename }}
