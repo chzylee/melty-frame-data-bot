@@ -4,15 +4,19 @@ on:
       env:
         description: Environment to which code will be deployed
         required: true
+        type: string
       version:
         description: Current app version
         required: true
+        type: string
       filename:
         description: .zip filename (not including extension)
         required: true
+        type: string
       lambda_name:
         description: Name of the Lambda to update
         required: true
+        type: string
     secrets:
       S3_ROLE_ARN:
         required: true
