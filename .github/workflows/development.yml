@@ -8,6 +8,8 @@ on:
 env:
   ENV: 'dev' # Environment should be static for each env's .yml file.
   VERSION: 1.0.4 # Increment as needed. Need to update version for pipeline to create release.
+  # TODO: setup dev Lambda and change name.
+  LAMBDA_NAME: fgc-aacc-meltyframedatabot
 
 permissions:
   id-token: write # This is required for requesting the JWT
@@ -26,13 +28,6 @@ jobs:
           FILENAME=${{ secrets.DIST_ZIP_NAME }}-${{ env.VERSION }}-${{ env.ENV }}
           echo "filename=$FILENAME" >> $GITHUB_OUTPUT
           echo "Package filename: $FILENAME"
-      - name: Set Lambda name
-        id: set_lambda_name
-        run: |
-          LAMBDA_NAME=${{ secrets.LAMBDA_NAME }}
-          echo "lambda_name=$LAMBDA_NAME" >> $GITHUB_OUTPUT
-          echo "Lambda name: $LAMBDA_NAME"
-        # Setup as parameter here to eventually suport deploying to different Lambda for dev.
 
   RunUnitTests:
     uses: ./.github/workflows/unit_test.yml
@@ -53,5 +48,5 @@ jobs:
       env: ${{ inputs.env }}
       version: ${{ inputs.version }}
       filename: ${{ needs.SetupParameters.outputs.filename }}
-      lambda_name: ${{ needs.SetupParameters.outputs.lambda_name }}
+      lambda_name: ${{ env.LAMBDA_NAME }}
     secrets: inherit
