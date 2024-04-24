@@ -38,6 +38,7 @@ jobs:
       env: ${{ inputs.env }}
       version: ${{ inputs.version }}
       filename: ${{ needs.SetFilename.outputs.filename }}
+    secrets: inherit
 
   Deploy:
     runs-on: ubuntu-latest
@@ -47,3 +48,5 @@ jobs:
       env: ${{ inputs.env }}
       version: ${{ inputs.version }}
       filename: ${{ needs.SetFilename.outputs.filename }}
+      lambda_name: ${{ secrets.LAMBDA_NAME }}
+    secrets: inherit
