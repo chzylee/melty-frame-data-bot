@@ -40,7 +40,7 @@ jobs:
           echo "Branch: $BRANCH"
       - name: Exit if not on main branch
         run: |
-          if ${{ endsWith(steps.extract_branch.outputs.branch, 'main')}} == false;
+          if [ '${{ endsWith(steps.extract_branch.outputs.branch, 'main')}}' == 'false' ];
           then
             echo "Extracted branch: ${{steps.extract_branch.outputs.branch}}"
             echo "Branch ends with main: ${{ endsWith(steps.extract_branch.outputs.branch, 'main')}}"
