@@ -38,6 +38,13 @@ jobs:
           echo "filename=$FILENAME" >> $GITHUB_OUTPUT
           echo "Filename set as $FILENAME"
 
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1.7.0
+        with:
+          role-to-assume: ${{ secrets.S3_ROLE_ARN }}
+          role-session-name: GitHub_to_AWS_via_FederatedOIDC
+          aws-region: ${{ secrets.AWS_REGION }}
+
       - name: Check S3 bucket
         run: |
           aws s3api wait object-exists \
