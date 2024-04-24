@@ -1,0 +1,65 @@
+name: Deploy .zip from S3 to Lambda
+
+# Inputs:
+#   env - Environment code should deploy to
+#   version - Current app version
+#   filename - .zip filename (not including extension)
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'App Version'
+        type: string
+        required: true
+
+permissions:
+  id-token: write # This is required for requesting the JWT
+  contents: read # This is required for actions/checkout and tag creation
+
+jobs:
+  DeployFromS3ToLambda:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Check Git tag
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const refResponse = await github.rest.git.getRef({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              ref: 'tags/${{ inputs.version }}'
+            });
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1.7.0
+        with:
+          role-to-assume: ${{ secrets.S3_ROLE_ARN }}
+          role-session-name: GitHub_to_AWS_via_FederatedOIDC
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      # S3 Key should match filename. This should change in build.yml too if this must change.
+      - name: Set S3 Key
+        id: set_s3_key
+        run: |
+          FILENAME=${{ inputs.filename }}.zip
+          echo "filename=$FILENAME" >> $GITHUB_OUTPUT
+          echo "Filename set as $FILENAME"
+
+      - name: Check S3 bucket
+        run: |
+          aws s3api wait object-exists \
+            --bucket ${{ secrets.BUCKET_NAME}} \
+            --key ${{ steps.set_s3_key.outputs.filename }} \
+            --cli-read-timeout 60 \
+            --cli-connect-timeout 60
+
+      - name: Update Lambda Code
+        run: |
+          aws lambda update-function-code \
+            --function-name=${{ secrets.LAMBDA_NAME }} \
+            --s3-bucket=${{ secrets.BUCKET_NAME}} \
+            --s3-key=${{ steps.set_s3_key.outputs.filename }} \
+            --cli-read-timeout 60 \
+            --cli-connect-timeout 60

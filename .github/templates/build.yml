@@ -1,0 +1,89 @@
+name: Zip and upload to S3
+
+# Inputs:
+#   env - Environment code should deploy to
+#   version - Current app version
+#   filename - .zip filename (not including extension)
+
+permissions:
+  id-token: write # This is required for requesting the JWT
+  contents: write # This is required for actions/checkout and tag creation
+
+jobs:
+  UpdateGitTag:
+    runs-on: ubuntu-latest
+    outputs:
+      version_tag_exists: ${{ steps.check_tag.outputs.tag_exists }}
+    steps:
+      - name: Define tag
+        id: define_tag
+        run: |
+          TAG=refs/tags/${{ inputs.version }}
+          echo "tag=$TAG" >> $GITHUB_OUTPUT
+          echo "tag=$TAG"
+
+      - name: Git clone the repository
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0 # Need this to get all tags.
+
+      - name: Check if tag exists
+        id: check_tag
+        run: |
+          echo $(git rev-parse --quiet --verify "refs/tags/${{ inputs.version }}")
+          if git rev-parse --quiet --verify "refs/tags/${{ inputs.version }}"; then
+            echo "Tag '${{ inputs.version }}' exists."
+            TAG_EXISTS=true
+          else
+            echo "Tag '${{ inputs.version }}' does not exist."
+            TAG_EXISTS=false
+          fi
+          echo "tag_exists=$TAG_EXISTS" >> $GITHUB_OUTPUT
+
+      - name: Create Git tag
+        if: steps.check_tag.outputs.tag_exists != 'true'
+        uses: actions/github-script@v6
+        with:
+          script: |
+            github.rest.git.createRef({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              ref: '${{ steps.define_tag.outputs.tag }}',
+              sha: context.sha
+            })
+
+  BuildAndUploadToS3:
+    needs: [UpdateGitTag]
+    runs-on: ubuntu-latest
+    if: ${{ needs.UpdateGitTag.outputs.version_tag_exists }} != 'true'
+    steps:
+      - name: Exit if current version is uploaded
+        run: |
+          echo "Tag for current version already exists: ${{ needs.UpdateGitTag.outputs.version_tag_exists }}"
+          if ${{ needs.UpdateGitTag.outputs.version_tag_exists }} = "true"; then
+            echo "Version is already tagged and uploaded to S3. Exiting."
+          else 
+            echo "Version is not yet uploaded to S3. Proceeding with build and upload"
+          fi
+
+      - name: Git clone the repository
+        uses: actions/checkout@v3
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1.7.0
+        with:
+          role-to-assume: ${{ secrets.S3_ROLE_ARN }}
+          role-session-name: GitHub_to_AWS_via_FederatedOIDC
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      - name: Zip files
+        id: zip_files
+        run: |
+          FILENAME=${{ inputs.filename }}.zip
+          echo "filename=$FILENAME" >> $GITHUB_OUTPUT
+          cd src
+          zip -r ../$FILENAME *.py commands data_helpers
+        # Put file in starting working directory.
+
+      - name: Deploy to S3
+        run: aws s3 cp ${{ steps.zip_files.outputs.filename }} s3://${{ secrets.BUCKET_NAME }}
