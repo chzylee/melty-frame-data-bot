@@ -22,6 +22,12 @@ jobs:
         with:
           ref: ${{ github.ref }}
 
+      - name: Check workspace
+        run: |
+          ls
+          ls ./.github/templates
+          ls ./.github/templates/test
+
       - name: Test
         uses: ./.github/templates/test/unit_test.yml
 
