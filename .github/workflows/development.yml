@@ -16,7 +16,12 @@ permissions:
 jobs:
   RunDevPipeline:
     runs-on: ubuntu-latest
-    uses: ./.github/templates/pipeline.yml
-    with:
-      env: ${{ env.ENV }}
-      version: ${{ env.VERSION }}
+    steps:
+    - name: Checkout code
+        uses: actions/checkout@v3
+
+    - name: Run pipeline
+      uses: ./.github/templates/pipeline.yml
+      with:
+        env: ${{ env.ENV }}
+        version: ${{ env.VERSION }}
