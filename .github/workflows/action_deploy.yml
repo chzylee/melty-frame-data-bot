@@ -5,10 +5,6 @@ on:
         description: Environment to which code will be deployed
         required: true
         type: string
-      version:
-        description: Current app version
-        required: true
-        type: string
       filename:
         description: .zip filename (not including extension)
         required: true
@@ -34,25 +30,6 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
-      # Ensure releases have a tag outside of dev.
-      - name: Check Git tag
-        if: ${{ inputs.env != 'dev' }}
-        uses: actions/github-script@v6
-        with:
-          script: |
-            const refResponse = await github.rest.git.getRef({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              ref: 'tags/${{ inputs.version }}'
-            });
-
-      - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v1.7.0
-        with:
-          role-to-assume: ${{ secrets.S3_ROLE_ARN }}
-          role-session-name: GitHub_to_AWS_via_FederatedOIDC
-          aws-region: ${{ secrets.AWS_REGION }}
-
       # S3 Key should match filename. This should change in build.yml too if this must change.
       - name: Set S3 Key
         id: set_s3_key
@@ -60,6 +37,13 @@ jobs:
           FILENAME=${{ inputs.filename }}.zip
           echo "filename=$FILENAME" >> $GITHUB_OUTPUT
           echo "Filename set as $FILENAME"
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1.7.0
+        with:
+          role-to-assume: ${{ secrets.S3_ROLE_ARN }}
+          role-session-name: GitHub_to_AWS_via_FederatedOIDC
+          aws-region: ${{ secrets.AWS_REGION }}
 
       - name: Check S3 bucket
         run: |

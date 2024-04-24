@@ -10,27 +10,20 @@ PyNaCl was imported for verification with Discord via Lambda Layers. The Layer c
 
 ### CI/CD
 
-GitHub Actions pipeline is defined in [./github/workflows](./.github/workflows/). App version needs to be explicitly updated in [build.yml](./.github/workflows//build.yml) whenever new deployments need to be made.
+Builds and deployments run automatically via GitHub Actions workflows. There are general Unit Test, Build, and Deploy composable actions to designate CI/CD stages.
 
-#### Tagging
+Build and Deploy workflows have conditional steps to handle different environments. Each environment should have its own .yml file (e.g. development.yml) that passes inputs into each pipeline stage. Packages will have `-<env>` at the end of their filenames to designate releases from dev deployments.
 
-Tags are created with a generic version tag starting at 1.0.0. Increment as needed for updates and update the VERSION env variable in build.yml to do so. Tags are used to mark releases. There is no need to update the version/tag if there is not a need for a new deployment.
+**Dev** will always build and deploy for continuous integration testing. It deploys to a separate Lambda from Release.
 
-#### Pipeline
-
-Build and deployment pipelines will only run when the pipeline is run with a new tag. If there already exists a tag for the version set in build.yml when the code is pushed, no build/deployment will run. Here is a summary of the pipeline overall:
-
-1. Create Git Tag for designated version if one does not yet exist for it.
-2. If new tag was created in Git for the current version, `cd src` and zip the src directory.
-3. Connect to AWS using GitHub IAM role and upload the .zip file to S3.
-4. **Deployment pipeline must be manually triggered** using the version you want to deploy as the input.
-5. Deployment pipeline will find the .zip in S3 and update the code for the bot's Lambda using it.
+**Release** uses `prod` environment and is triggered when new tags are pushed to `main` matching a numeric pattern such as `1.0.0`. Release builds will pull the version number from the tag and ensure there is not already a .zip package in S3 for the designated app version to avoid overwriting releases for a given version.
 
 ### File Organization
 
 - [lambda_function.py](./src/lambda_function.py) is the entry point to the Lambda (following AWS default standard).
 - Command logic will go in [/commands](./src/commands/).
   - Can import commands using `from commands import <command_filename>`
+- [data_helpers/](./src/data_helpers/) contains utilities to help manage use of Discord data models.
 
 ## Update Commands
 

@@ -2,14 +2,16 @@ name: Release Pipeline
 
 on:
   push:
-    branches:
-      - main
     tags:
       - '[0-9]+.[0-9]+.[0-9]+' # Trigger only when tag with version (e.g. 1.0.0) is pushed.
+  workflow_dispatch:
+    inputs:
+      version:
+        description: Version to release
+        required: true
 
 env:
   ENV: 'prod' # Environment should be static for each env's .yml file.
-  VERSION: '1.0.4' # Increment as needed. Need to update version for pipeline to create release.
   APP_NAME: 'meltyframedatabot'
   LAMBDA_NAME: 'fgc-aacc-meltyframedatabot'
 
@@ -18,33 +20,46 @@ permissions:
   contents: write # This is required for actions/checkout and tag creation
 
 jobs:
+  RunUnitTests:
+    uses: ./.github/workflows/action_unit_test.yml
+
   SetupParameters:
     runs-on: ubuntu-latest
     outputs:
       env: ${{ steps.set_params.outputs.env }}
-      version: ${{ steps.set_params.outputs.version }}
       filename: ${{ steps.set_params.outputs.filename }}
       lambda_name: ${{ steps.set_params.outputs.lambda_name }}
     steps:
+      - name: Set version
+        id: set_version
+        run: |
+          if [ "${{ github.event_name }}" == "workflow_dispatch" ];
+          then
+            VERSION=${{ inputs.version }}
+            echo "Running from workflow_dispatch with input version: $VERSION"
+          else
+            VERSION=${{  github.ref_name }}
+            echo "Run via push of new tag: $VERSION"
+          fi
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+
       # Setup parameters in job because you cannot directly pass variables into input.
       - name: Set parameters
         id: set_params
+        # Obtain version from tag name for prod releases.
         run: |
           ENV=${{ env.ENV }}
-          VERSION=${{ env.VERSION }}
-          FILENAME=${{ env.APP_NAME }}-${{ env.VERSION }}-${{ env.ENV }}
+          VERSION=${{  steps.set_version.outputs.version }}
+          FILENAME=${{ env.APP_NAME }}-$VERSION-$ENV
           LAMBDA_NAME=${{ env.LAMBDA_NAME }}
           echo "env=$ENV" >> $GITHUB_OUTPUT
           echo "version=$VERSION" >> $GITHUB_OUTPUT
           echo "filename=$FILENAME" >> $GITHUB_OUTPUT
           echo "lambda_name=$LAMBDA_NAME" >> $GITHUB_OUTPUT
 
-  RunUnitTests:
-    uses: ./.github/workflows/unit_test.yml
-
   Build:
     needs: [SetupParameters, RunUnitTests]
-    uses: ./.github/workflows/build.yml
+    uses: ./.github/workflows/action_build.yml
     with:
       env: ${{needs.SetupParameters.outputs.env}}
       filename: ${{needs.SetupParameters.outputs.filename}}
@@ -52,10 +67,9 @@ jobs:
 
   Deploy:
     needs: [SetupParameters, RunUnitTests, Build]
-    uses: ./.github/workflows/deploy.yml
+    uses: ./.github/workflows/action_deploy.yml
     with:
       env: ${{needs.SetupParameters.outputs.env}}
-      version: ${{needs.SetupParameters.outputs.version}}
       filename: ${{ needs.SetupParameters.outputs.filename}}
       lambda_name: ${{ needs.SetupParameters.outputs.lambda_name}}
     secrets: inherit

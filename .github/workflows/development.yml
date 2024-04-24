@@ -22,7 +22,6 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       env: ${{ steps.set_params.outputs.env }}
-      version: ${{ steps.set_params.outputs.version }}
       filename: ${{ steps.set_params.outputs.filename }}
       lambda_name: ${{ steps.set_params.outputs.lambda_name }}
     steps:
@@ -31,20 +30,18 @@ jobs:
         id: set_params
         run: |
           ENV=${{ env.ENV }}
-          VERSION=${{ env.VERSION }}
-          FILENAME=${{ env.APP_NAME }}-${{ env.VERSION }}-${{ env.ENV }}
+          FILENAME=${{ env.APP_NAME }}-${{ env.VERSION }}-$ENV
           LAMBDA_NAME=${{ env.LAMBDA_NAME }}
           echo "env=$ENV" >> $GITHUB_OUTPUT
-          echo "version=$VERSION" >> $GITHUB_OUTPUT
           echo "filename=$FILENAME" >> $GITHUB_OUTPUT
           echo "lambda_name=$LAMBDA_NAME" >> $GITHUB_OUTPUT
 
   RunUnitTests:
-    uses: ./.github/workflows/unit_test.yml
+    uses: ./.github/workflows/action_unit_test.yml
 
   Build:
     needs: [SetupParameters, RunUnitTests]
-    uses: ./.github/workflows/build.yml
+    uses: ./.github/workflows/action_build.yml
     with:
       env: ${{needs.SetupParameters.outputs.env}}
       filename: ${{needs.SetupParameters.outputs.filename}}
@@ -52,10 +49,9 @@ jobs:
 
   Deploy:
     needs: [SetupParameters, RunUnitTests, Build]
-    uses: ./.github/workflows/deploy.yml
+    uses: ./.github/workflows/action_deploy.yml
     with:
       env: ${{needs.SetupParameters.outputs.env}}
-      version: ${{needs.SetupParameters.outputs.version}}
       filename: ${{ needs.SetupParameters.outputs.filename}}
       lambda_name: ${{ needs.SetupParameters.outputs.lambda_name}}
     secrets: inherit
