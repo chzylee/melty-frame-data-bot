@@ -32,7 +32,7 @@ jobs:
         run: |
           ENV=${{ env.ENV }}
           VERSION=${{ env.VERSION }}
-          FILENAME=${{ env.APP_NAME }}-${{ env.VERSION }}-${{ env.ENV }}
+          FILENAME=${{ env.APP_NAME }}-$VERSION-$ENV
           LAMBDA_NAME=${{ env.LAMBDA_NAME }}
           echo "env=$ENV" >> $GITHUB_OUTPUT
           echo "version=$VERSION" >> $GITHUB_OUTPUT
