@@ -2,8 +2,6 @@ name: Release Pipeline
 
 on:
   push:
-    branches:
-      - main
     tags:
       - '[0-9]+.[0-9]+.[0-9]+' # Trigger only when tag with version (e.g. 1.0.0) is pushed.
 
@@ -17,7 +15,20 @@ permissions:
   contents: write # This is required for actions/checkout and tag creation
 
 jobs:
+  RunUnitTests:
+    uses: ./.github/workflows/action_unit_test.yml
+
+  VerifyMainBranch:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Exit if not on master branch
+        if: endsWith(github.ref, 'main') == false
+        run: |
+          echo "Releases can only run for tags pushed to master branch"
+          exit 1
+
   SetupParameters:
+    needs: [VerifyMainBranch]
     runs-on: ubuntu-latest
     outputs:
       env: ${{ steps.set_params.outputs.env }}
@@ -38,9 +49,6 @@ jobs:
           echo "version=$VERSION" >> $GITHUB_OUTPUT
           echo "filename=$FILENAME" >> $GITHUB_OUTPUT
           echo "lambda_name=$LAMBDA_NAME" >> $GITHUB_OUTPUT
-
-  RunUnitTests:
-    uses: ./.github/workflows/action_unit_test.yml
 
   Build:
     needs: [SetupParameters, RunUnitTests]
