@@ -1,7 +1,5 @@
-name: Zip and upload to S3
-
 # Inputs:
-#   env - Environment code should deploy to
+#   env - Environment to which code will be deployed
 #   version - Current app version
 #   filename - .zip filename (not including extension)
 

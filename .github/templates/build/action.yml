@@ -1,0 +1,17 @@
+name: Build and upload to S3
+
+description: Creates GitHub tag for current version, zips code, and uploads .zip to S3
+
+inputs:
+  env:
+    description: Environment to which code will be deployed
+    required: true
+  version:
+    description: Current app version
+    required: true
+  filename:
+    description: .zip filename (not including extension)
+    required: true
+
+runs:
+  using: python3

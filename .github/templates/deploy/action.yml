@@ -1,0 +1,17 @@
+name: Deploy .zip from S3 to Lambda
+
+description: Locates .zip in S3 and updates Lambda code with it.
+
+inputs:
+  env:
+    description: Environment to which code will be deployed
+    required: true
+  version:
+    description: Current app version
+    required: true
+  filename:
+    description: .zip filename (not including extension)
+    required: true
+
+runs:
+  using: python3
