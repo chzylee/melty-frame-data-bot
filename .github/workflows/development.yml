@@ -6,8 +6,8 @@ on:
       - main
 
 env:
-  ENV: 'dev'
-  VERSION: 1.0.4
+  ENV: 'dev' # Environment should be static for each env's .yml file.
+  VERSION: 1.0.4 # Increment as needed. Need to update version for pipeline to create release.
 
 permissions:
   id-token: write # This is required for requesting the JWT
@@ -16,8 +16,6 @@ permissions:
 jobs:
   RunDevPipeline:
     runs-on: ubuntu-latest
-    env:
-      FILENAME: ${{ secrets.DIST_ZIP_NAME }}-${{ env.VERSION }}-${{ env.ENV }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -25,16 +23,23 @@ jobs:
       - name: Test
         uses: ./.github/templates/unit_test.yml
 
+      - name: Set distributable filename
+        id: set_filename
+        run: |
+          FILENAME=${{ secrets.DIST_ZIP_NAME }}-${{ env.VERSION }}-${{ env.ENV }}.zip
+          echo "filename=$FILENAME" >> $GITHUB_OUTPUT
+          echo "Package filename: $FILENAME"
+
       - name: Build
         uses: ./.github/templates/build.yml
         with:
           env: ${{ inputs.env }}
           version: ${{ inputs.version }}
-          filename: ${{ variables.FILENAME }}
+          filename: ${{ steps.set_filename.outputs.filename }}
 
       - name: Deploy
         uses: ./.github/templates/deploy.yml
         with:
           env: ${{ inputs.env }}
           version: ${{ inputs.version }}
-          filename: ${{ variables.FILENAME }}
+          filename: ${{ steps.set_filename.outputs.filename }}
