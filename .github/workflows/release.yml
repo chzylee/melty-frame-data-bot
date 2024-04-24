@@ -18,17 +18,7 @@ jobs:
   RunUnitTests:
     uses: ./.github/workflows/action_unit_test.yml
 
-  VerifyMainBranch:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Exit if not on master branch
-        if: endsWith(github.ref, 'main') == false
-        run: |
-          echo "Releases can only run for tags pushed to master branch"
-          exit 1
-
   SetupParameters:
-    needs: [VerifyMainBranch]
     runs-on: ubuntu-latest
     outputs:
       env: ${{ steps.set_params.outputs.env }}
@@ -36,6 +26,11 @@ jobs:
       filename: ${{ steps.set_params.outputs.filename }}
       lambda_name: ${{ steps.set_params.outputs.lambda_name }}
     steps:
+      - name: Exit if not on main branch
+        if: endsWith(github.ref, 'main') == false
+        run: |
+          echo "Releases can only run for tags pushed to main branch"
+          exit 1
       # Setup parameters in job because you cannot directly pass variables into input.
       - name: Set parameters
         id: set_params
