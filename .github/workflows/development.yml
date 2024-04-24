@@ -8,6 +8,7 @@ on:
 env:
   ENV: 'dev' # Environment should be static for each env's .yml file.
   VERSION: '1.0.4' # Increment as needed. Need to update version for pipeline to create release.
+  APP_NAME: 'meltyframedatabot'
   # TODO: setup dev Lambda and change name.
   LAMBDA_NAME: 'fgc-aacc-meltyframedatabot'
 
@@ -30,7 +31,7 @@ jobs:
         run: |
           ENV=${{ env.ENV }}
           VERSION=${{ env.VERSION }}
-          FILENAME=${{ secrets.DIST_ZIP_NAME }}-${{ env.VERSION }}-${{ env.ENV }}
+          FILENAME=${{ env.APP_NAME }}-${{ env.VERSION }}-${{ env.ENV }}
           LAMBDA_NAME=${{ env.LAMBDA_NAME }}
           echo "env=$ENV" >> $GITHUB_OUTPUT
           echo "version=$VERSION" >> $GITHUB_OUTPUT
@@ -46,15 +47,15 @@ jobs:
     with:
       env: ${{needs.SetupParameters.outputs.env}}
       version: ${{needs.SetupParameters.outputs.version}}
-      filename: ${{ needs.SetupParameters.outputs.filename}}
+      filename: ${{needs.SetupParameters.outputs.filename}}
     secrets: inherit
 
   Deploy:
     needs: [SetupParameters, RunUnitTests, Build]
     uses: ./.github/workflows/deploy.yml
     with:
-      env: ${{ needs.SetupParameters.outputs.env }}
-      version: ${{ needs.SetupParameters.outputs.version }}
-      filename: ${{ needs.SetupParameters.outputs.filename }}
-      lambda_name: ${{ needs.SetupParameters.outputs.lambda_name }}
+      env: ${{needs.SetupParameters.outputs.env}}
+      version: ${{needs.SetupParameters.outputs.version}}
+      filename: ${{ needs.SetupParameters.outputs.filename}}
+      lambda_name: ${{ needs.SetupParameters.outputs.lambda_name}}
     secrets: inherit
