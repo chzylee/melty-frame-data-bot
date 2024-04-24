@@ -31,7 +31,7 @@ jobs:
         # Obtain version from tag name for prod releases.
         run: |
           ENV=${{ env.ENV }}
-          VERSION=${{ github.ref#refs/tags/ }}
+          VERSION=${{ basename(github.ref) }}
           FILENAME=${{ env.APP_NAME }}-$VERSION-$ENV
           LAMBDA_NAME=${{ env.LAMBDA_NAME }}
           echo "env=$ENV" >> $GITHUB_OUTPUT
