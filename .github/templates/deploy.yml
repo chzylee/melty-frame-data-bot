@@ -5,14 +5,6 @@ name: Deploy .zip from S3 to Lambda
 #   version - Current app version
 #   filename - .zip filename (not including extension)
 
-on:
-  workflow_dispatch:
-    inputs:
-      version:
-        description: 'App Version'
-        type: string
-        required: true
-
 permissions:
   id-token: write # This is required for requesting the JWT
   contents: read # This is required for actions/checkout and tag creation

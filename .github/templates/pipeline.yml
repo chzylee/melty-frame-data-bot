@@ -4,9 +4,6 @@ name: Main CI-CD Pipeline
 #   env - Environment code should deploy to
 #   version - Current app version
 
-on:
-  workflow_dispatch:
-
 pipeline_variables:
   FILENAME: ${{ secrets.DIST_ZIP_NAME }}-${{ inputs.version }}-${{ inputs.env }}
 
