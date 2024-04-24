@@ -71,12 +71,15 @@ def lambda_handler(event, context):
 
         response = {
             "type": constants.RESPONSE_TYPES["MESSAGE_WITH_SOURCE"],
-            "data": { "content": message_content },
+            "data": { 
+                "content": message_content,
+                "embeds": []
+            }
         }
         
         if len(embeds) > 0:
             for embed in embeds:
                 embed_json = converters.convert_embed_to_json(embed)
-                response["embeds"].append(embed_json)
+                response["data"]["embeds"].append(embed_json)
 
     return response
