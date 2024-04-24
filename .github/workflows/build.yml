@@ -38,7 +38,7 @@ jobs:
       - name: Define tag
         id: define_tag
         run: |
-          TAG=refs/tags/${{ inputs.version }}
+          TAG=${{ inputs.version }}
           echo "tag=$TAG" >> $GITHUB_OUTPUT
           echo "tag=$TAG"
 
