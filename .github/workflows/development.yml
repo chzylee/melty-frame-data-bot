@@ -19,6 +19,8 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
+        with:
+          ref: ${{ basename(github.ref) }}
 
       - name: Test
         uses: ./.github/templates/unit_test.yml
