@@ -40,11 +40,11 @@ jobs:
           echo "lambda_name=$LAMBDA_NAME" >> $GITHUB_OUTPUT
 
   RunUnitTests:
-    uses: ./.github/workflows/unit_test.yml
+    uses: ./.github/workflows/action_unit_test.yml
 
   Build:
     needs: [SetupParameters, RunUnitTests]
-    uses: ./.github/workflows/build.yml
+    uses: ./.github/workflows/action_build.yml
     with:
       env: ${{needs.SetupParameters.outputs.env}}
       filename: ${{needs.SetupParameters.outputs.filename}}
@@ -52,7 +52,7 @@ jobs:
 
   Deploy:
     needs: [SetupParameters, RunUnitTests, Build]
-    uses: ./.github/workflows/deploy.yml
+    uses: ./.github/workflows/action_deploy.yml
     with:
       env: ${{needs.SetupParameters.outputs.env}}
       version: ${{needs.SetupParameters.outputs.version}}
