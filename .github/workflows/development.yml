@@ -28,12 +28,12 @@ jobs:
 
   RunUnitTests:
     runs-on: ubuntu-latest
-    uses: ./.github/workflows/test/unit_test.yml
+    uses: ./.github/workflows/unit_test.yml
 
   Build:
     runs-on: ubuntu-latest
     needs: [SetFilename, RunUnitTests]
-    uses: ./.github/workflows/build/build.yml
+    uses: ./.github/workflows/build.yml
     with:
       env: ${{ inputs.env }}
       version: ${{ inputs.version }}
@@ -42,7 +42,7 @@ jobs:
   Deploy:
     runs-on: ubuntu-latest
     needs: [SetFilename, RunUnitTests, Build]
-    uses: ./.github/workflows/deploy/deploy.yml
+    uses: ./.github/workflows/deploy.yml
     with:
       env: ${{ inputs.env }}
       version: ${{ inputs.version }}
