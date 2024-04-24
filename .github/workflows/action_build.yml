@@ -1,0 +1,64 @@
+on:
+  workflow_call:
+    inputs:
+      env:
+        description: Environment to which code will be deployed
+        required: true
+        type: string
+      filename:
+        description: .zip filename (not including extension)
+        required: true
+        type: string
+    secrets:
+      S3_ROLE_ARN:
+        required: true
+      AWS_REGION:
+        required: true
+      BUCKET_NAME:
+        required: true
+
+# Permission can be added at job level or workflow level
+permissions:
+  id-token: write # This is required for requesting the JWT
+  contents: write # This is required for actions/checkout and tag creation
+
+jobs:
+  BuildAndUploadToS3:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Git clone the repository
+        uses: actions/checkout@v4
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1.7.0
+        with:
+          role-to-assume: ${{ secrets.S3_ROLE_ARN }}
+          role-session-name: GitHub_to_AWS_via_FederatedOIDC
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      - name: Zip files
+        id: zip_files
+        run: |
+          FILENAME=${{ inputs.filename }}.zip
+          echo "filename=$FILENAME" >> $GITHUB_OUTPUT
+          echo "Zipping code into $FILENAME"
+          cd src
+          zip -r ../$FILENAME *.py commands data_helpers
+        # Put file in starting working directory.
+
+      - name: Check if file exists
+        # This is to avoid overwriting releases. Overwriting dev deployments is safe.
+        if: ${{ inputs.env != 'dev' }}
+        run: |
+          if aws s3 ls s3://${{ secrets.BUCKET_NAME }}/${{ steps.zip_files.outputs.filename }};
+          then
+            echo "File ${{ steps.zip_files.outputs.filename }} already exists."
+            echo "Build failure: cannot overwrite existing release outside of dev."
+            exit 1
+          else
+            echo "File ${{ steps.zip_files.outputs.filename }} not found in S3. Proceeding with upload to S3."
+          fi
+        # Call exit 1 to fail this job.
+
+      - name: Deploy to S3
+        run: aws s3 cp ${{ steps.zip_files.outputs.filename }} s3://${{ secrets.BUCKET_NAME }}

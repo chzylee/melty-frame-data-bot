@@ -1,22 +1,42 @@
-name: Deploy .zip from S3 to Lambda
-
 on:
-  workflow_dispatch:
+  workflow_call:
     inputs:
-      version:
-        description: 'App Version'
+      env:
+        description: Environment to which code will be deployed
+        required: true
         type: string
+      version:
+        description: Current app version
+        required: true
+        type: string
+      filename:
+        description: .zip filename (not including extension)
+        required: true
+        type: string
+      lambda_name:
+        description: Name of the Lambda to update
+        required: true
+        type: string
+    secrets:
+      S3_ROLE_ARN:
+        required: true
+      AWS_REGION:
+        required: true
+      BUCKET_NAME:
         required: true
 
 permissions:
   id-token: write # This is required for requesting the JWT
   contents: read # This is required for actions/checkout and tag creation
+
 jobs:
   DeployFromS3ToLambda:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
+      # Ensure releases have a tag outside of dev.
       - name: Check Git tag
+        if: ${{ inputs.env != 'dev' }}
         uses: actions/github-script@v6
         with:
           script: |
@@ -37,7 +57,7 @@ jobs:
       - name: Set S3 Key
         id: set_s3_key
         run: |
-          FILENAME=${{ secrets.DIST_ZIP_NAME }}-${{ inputs.version }}.zip
+          FILENAME=${{ inputs.filename }}.zip
           echo "filename=$FILENAME" >> $GITHUB_OUTPUT
           echo "Filename set as $FILENAME"
 
@@ -51,8 +71,9 @@ jobs:
 
       - name: Update Lambda Code
         run: |
+          echo "Pushing code to lambda ${{ inputs.lambda_name }}"
           aws lambda update-function-code \
-            --function-name=${{ secrets.LAMBDA_NAME }} \
+            --function-name=${{ inputs.lambda_name }} \
             --s3-bucket=${{ secrets.BUCKET_NAME}} \
             --s3-key=${{ steps.set_s3_key.outputs.filename }} \
             --cli-read-timeout 60 \

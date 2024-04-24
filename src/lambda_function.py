@@ -2,7 +2,8 @@ from nacl.signing import VerifyKey
 from nacl.exceptions import BadSignatureError
 import constants
 import logger
-from commands import teatime
+from data_helpers import converters
+from commands import teatime, framedata
 
 def verify_signature(event):
     raw_body = event["rawBody"]
@@ -42,7 +43,9 @@ def lambda_handler(event, context):
         return { "message": "Request is not Lambda event: 'body-json' not found" }
     
     body = event["body-json"]
+    message_content = None
     reponse = None
+    embeds = []
 
     if is_ping_pong(body):
         print("is_ping_pong: True")
@@ -50,18 +53,33 @@ def lambda_handler(event, context):
     else:
         data = body["data"]
         command_name = data["name"]
-        message_content = None
+        logger.log_command(command_name=command_name)
 
-        if command_name == "teatime":
-            logger.log_command(command_name=command_name)
-            message_content = teatime.have_teatime()
+        try:
+            if command_name == "teatime":
+                message_content = teatime.have_teatime()
+            elif command_name == "framedata":
+                char_move = framedata.get_char_and_move(data)
+                message_content = framedata.get_move_message(char_move)
+                embeds.append(framedata.get_frame_data(char_move))
 
-        if message_content == None:
-            logger.log_error(constants.COMMAND_NAME_ERROR_MESSAGE)
+            if message_content == None:
+                logger.log_error(constants.COMMAND_NAME_ERROR_MESSAGE)
+        except Exception as e:
+            print("Error occurred: ", e)
+            message_content = f"Error occurred: {e}"
 
         response = {
             "type": constants.RESPONSE_TYPES["MESSAGE_WITH_SOURCE"],
-            "data": { "content": message_content },
+            "data": { 
+                "content": message_content,
+                "embeds": []
+            }
         }
+        
+        if len(embeds) > 0:
+            for embed in embeds:
+                embed_json = converters.convert_embed_to_json(embed)
+                response["data"]["embeds"].append(embed_json)
 
     return response
