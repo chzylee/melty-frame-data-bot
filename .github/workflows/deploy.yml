@@ -34,7 +34,9 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
+      # Ensure releases have a tag outside of dev.
       - name: Check Git tag
+        if: ${{ inputs.env != 'dev' }}
         uses: actions/github-script@v6
         with:
           script: |

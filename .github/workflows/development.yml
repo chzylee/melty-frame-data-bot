@@ -4,6 +4,8 @@ on:
   push:
     branches-ignore:
       - main
+    tags:
+      - '!*' # Avoid accidental trigger on tag creation.
 
 env:
   ENV: 'dev' # Environment should be static for each env's .yml file.
@@ -46,7 +48,6 @@ jobs:
     uses: ./.github/workflows/build.yml
     with:
       env: ${{needs.SetupParameters.outputs.env}}
-      version: ${{needs.SetupParameters.outputs.version}}
       filename: ${{needs.SetupParameters.outputs.filename}}
     secrets: inherit
 
