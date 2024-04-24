@@ -8,6 +8,8 @@ on:
 env:
   ENV: 'dev'
   VERSION: 1.0.4
+
+variables:
   FILENAME: ${{ secrets.DIST_ZIP_NAME }}-${{ env.VERSION }}-${{ env.ENV }}
 
 permissions:
@@ -29,11 +31,11 @@ jobs:
         with:
           env: ${{ inputs.env }}
           version: ${{ inputs.version }}
-          filename: ${{ pipeline_variables.FILENAME }}
+          filename: ${{ variables.FILENAME }}
 
       - name: Deploy
         uses: ./.github/templates/deploy.yml
         with:
           env: ${{ inputs.env }}
           version: ${{ inputs.version }}
-          filename: ${{ pipeline_variables.FILENAME }}
+          filename: ${{ variables.FILENAME }}
