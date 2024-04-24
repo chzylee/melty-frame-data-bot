@@ -41,6 +41,8 @@ jobs:
       - name: Exit if not on main branch
         if: endsWith(${{ steps.extract_branch.outputs.branch }}, 'main') == false
         run: |
+          echo "Extracteed branch: ${{steps.extract_branch.outputs.branch}}"
+          echo "Branch ends with main: ${{endsWith(${{ steps.extract_branch.outputs.branch }}, 'main')}}"
           echo "Releases can only run for tags pushed to main branch"
           exit 1
       # Setup parameters in job because you cannot directly pass variables into input.
