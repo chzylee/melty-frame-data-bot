@@ -1,7 +1,19 @@
-# Inputs:
-#   env - Environment code should deploy to
-#   version - Current app version
-#   filename - .zip filename (not including extension)
+name: Deploy .zip from S3 to Lambda
+
+description: Locates .zip in S3 and updates Lambda code with it.
+
+on:
+  workflow_call:
+    inputs:
+      env:
+        description: Environment to which code will be deployed
+        required: true
+      version:
+        description: Current app version
+        required: true
+      filename:
+        description: .zip filename (not including extension)
+        required: true
 
 permissions:
   id-token: write # This is required for requesting the JWT

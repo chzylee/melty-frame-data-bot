@@ -1,7 +1,19 @@
-# Inputs:
-#   env - Environment to which code will be deployed
-#   version - Current app version
-#   filename - .zip filename (not including extension)
+name: Build and upload to S3
+
+description: Creates GitHub tag for current version, zips code, and uploads .zip to S3
+
+on:
+  workflow_call:
+    inputs:
+      env:
+        description: Environment to which code will be deployed
+        required: true
+      version:
+        description: Current app version
+        required: true
+      filename:
+        description: .zip filename (not including extension)
+        required: true
 
 # Controls when the action will run. Invokes the workflow on push events but only for the main branch
 on:

@@ -1,6 +1,0 @@
-name: Run unit tests
-
-description: Runs unit tests using unittest CLI.
-
-runs:
-  using: python3
