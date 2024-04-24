@@ -69,8 +69,9 @@ jobs:
 
       - name: Update Lambda Code
         run: |
+          echo "Pushing code to lambda ${{ inputs.lambda_name }}"
           aws lambda update-function-code \
-            --function-name=${{ secrets.LAMBDA_NAME }} \
+            --function-name=${{ inputs.lambda_name }} \
             --s3-bucket=${{ secrets.BUCKET_NAME}} \
             --s3-key=${{ steps.set_s3_key.outputs.filename }} \
             --cli-read-timeout 60 \
