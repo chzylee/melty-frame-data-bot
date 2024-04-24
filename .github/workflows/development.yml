@@ -19,10 +19,10 @@ jobs:
   SetupParameters:
     runs-on: ubuntu-latest
     outputs:
-      env: ${{ steps.set_filename.outputs.env }}
-      version: ${{ steps.set_filename.outputs.version }}
-      filename: ${{ steps.set_filename.outputs.filename }}
-      lambda_name: ${{ steps.set_lambda_name.outputs.lambda_name }}
+      env: ${{ steps.set_params.outputs.env }}
+      version: ${{ steps.set_params.outputs.version }}
+      filename: ${{ steps.set_params.outputs.filename }}
+      lambda_name: ${{ steps.set_params.outputs.lambda_name }}
     steps:
       # Setup parameters in job because you cannot directly pass variables into input.
       - name: Set parameters
@@ -44,9 +44,9 @@ jobs:
     needs: [SetupParameters, RunUnitTests]
     uses: ./.github/workflows/build.yml
     with:
-      env: ${{ needs.SetupParameters.outputs.env }}
-      version: ${{ needs.SetupParameters.outputs.version }}
-      filename: ${{ needs.SetupParameters.outputs.filename }}
+      env: ${{needs.SetupParameters.outputs.env}}
+      version: ${{needs.SetupParameters.outputs.version}}
+      filename: ${{ needs.SetupParameters.outputs.filename}}
     secrets: inherit
 
   Deploy:
