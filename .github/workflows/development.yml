@@ -22,7 +22,7 @@ jobs:
       - name: Set filename
         id: set_filename
         run: |
-          FILENAME=${{ secrets.DIST_ZIP_NAME }}-${{ env.VERSION }}-${{ env.ENV }}.zip
+          FILENAME=${{ secrets.DIST_ZIP_NAME }}-${{ env.VERSION }}-${{ env.ENV }}
           echo "filename=$FILENAME" >> $GITHUB_OUTPUT
           echo "Package filename: $FILENAME"
 
