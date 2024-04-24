@@ -56,6 +56,7 @@ jobs:
             TAG_EXISTS=false
           fi
           echo "tag_exists=$TAG_EXISTS" >> $GITHUB_OUTPUT
+          echo "tag_exists: $TAG_EXISTS"
 
       - name: Create Git tag
         if: steps.check_tag.outputs.tag_exists != 'true'
@@ -98,6 +99,7 @@ jobs:
         run: |
           FILENAME=${{ inputs.filename }}.zip
           echo "filename=$FILENAME" >> $GITHUB_OUTPUT
+          echo "Zipping code into $FILENAME"
           cd src
           zip -r ../$FILENAME *.py commands data_helpers
         # Put file in starting working directory.
