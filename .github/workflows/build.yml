@@ -29,6 +29,8 @@ permissions:
 jobs:
   UpdateGitTag:
     runs-on: ubuntu-latest
+    # Do not need to worry about tag for Dev deployments.
+    if: ${{ inputs.env != 'dev' }}
     outputs:
       version_tag_exists: ${{ steps.check_tag.outputs.tag_exists }}
     steps:
@@ -73,16 +75,19 @@ jobs:
   BuildAndUploadToS3:
     needs: [UpdateGitTag]
     runs-on: ubuntu-latest
-    if: ${{ needs.UpdateGitTag.outputs.version_tag_exists }} != 'true'
+    # We can make dev deployments without a new tag.
+    if: ${{ ! needs.UpdateGitTag.outputs.version_tag_exists }} || ${{ inputs.env == 'dev' }}
     steps:
       - name: Exit if current version is uploaded
         run: |
+          echo "! needs.UpdateGitTag.outputs.version_tag_exists = ${{ ! needs.UpdateGitTag.outputs.version_tag_exists  }}""
           echo "Tag for current version already exists: ${{ needs.UpdateGitTag.outputs.version_tag_exists }}"
           if ${{ needs.UpdateGitTag.outputs.version_tag_exists }} = "true"; then
             echo "Version is already tagged and uploaded to S3. Exiting."
           else 
             echo "Version is not yet uploaded to S3. Proceeding with build and upload"
           fi
+          exit 0
 
       - name: Git clone the repository
         uses: actions/checkout@v4
