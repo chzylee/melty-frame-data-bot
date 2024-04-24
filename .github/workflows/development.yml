@@ -22,7 +22,6 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       env: ${{ steps.set_params.outputs.env }}
-      version: ${{ steps.set_params.outputs.version }}
       filename: ${{ steps.set_params.outputs.filename }}
       lambda_name: ${{ steps.set_params.outputs.lambda_name }}
     steps:
@@ -31,11 +30,9 @@ jobs:
         id: set_params
         run: |
           ENV=${{ env.ENV }}
-          VERSION=${{ env.VERSION }}
-          FILENAME=${{ env.APP_NAME }}-$VERSION-$ENV
+          FILENAME=${{ env.APP_NAME }}-${{ env.VERSION }}-$ENV
           LAMBDA_NAME=${{ env.LAMBDA_NAME }}
           echo "env=$ENV" >> $GITHUB_OUTPUT
-          echo "version=$VERSION" >> $GITHUB_OUTPUT
           echo "filename=$FILENAME" >> $GITHUB_OUTPUT
           echo "lambda_name=$LAMBDA_NAME" >> $GITHUB_OUTPUT
 
@@ -55,7 +52,6 @@ jobs:
     uses: ./.github/workflows/action_deploy.yml
     with:
       env: ${{needs.SetupParameters.outputs.env}}
-      version: ${{needs.SetupParameters.outputs.version}}
       filename: ${{ needs.SetupParameters.outputs.filename}}
       lambda_name: ${{ needs.SetupParameters.outputs.lambda_name}}
     secrets: inherit

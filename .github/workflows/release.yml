@@ -27,7 +27,6 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       env: ${{ steps.set_params.outputs.env }}
-      version: ${{ steps.set_params.outputs.version }}
       filename: ${{ steps.set_params.outputs.filename }}
       lambda_name: ${{ steps.set_params.outputs.lambda_name }}
     steps:
@@ -49,13 +48,26 @@ jobs:
           else
             echo "Tag pushed to main branch. Proceeding with deployment."
           fi
+      - name: Set version
+        id: set_version
+        run: |
+          if [ "${{ github.event_name }}" == "workflow_dispatch" ];
+          then
+            VERSION=${{ inputs.version }}
+            echo "Running from workflow_dispatch with input version: $VERSION"
+          else
+            VERSION=${{  github.ref_name }}
+            echo "Run via push of new tag: $VERSION"
+          fi
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+
       # Setup parameters in job because you cannot directly pass variables into input.
       - name: Set parameters
         id: set_params
         # Obtain version from tag name for prod releases.
         run: |
           ENV=${{ env.ENV }}
-          VERSION=${{  github.ref_name }}
+          VERSION=${{  steps.set_version.outputs.version }}
           FILENAME=${{ env.APP_NAME }}-$VERSION-$ENV
           LAMBDA_NAME=${{ env.LAMBDA_NAME }}
           echo "env=$ENV" >> $GITHUB_OUTPUT
@@ -76,7 +88,6 @@ jobs:
     uses: ./.github/workflows/action_deploy.yml
     with:
       env: ${{needs.SetupParameters.outputs.env}}
-      version: ${{needs.SetupParameters.outputs.version}}
       filename: ${{ needs.SetupParameters.outputs.filename}}
       lambda_name: ${{ needs.SetupParameters.outputs.lambda_name}}
     secrets: inherit
