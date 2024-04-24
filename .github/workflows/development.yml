@@ -25,19 +25,19 @@ jobs:
           FILENAME=${{ secrets.DIST_ZIP_NAME }}-${{ env.VERSION }}-${{ env.ENV }}.zip
           echo "filename=$FILENAME" >> $GITHUB_OUTPUT
           echo "Package filename: $FILENAME"
-          
+
   RunUnitTests:
     runs-on: ubuntu-latest
     uses: ./.github/templates/test/unit_test.yml
-    
+
   Build:
     runs-on: ubuntu-latest
     needs: [SetFilename, RunUnitTests]
     uses: ./.github/templates/build/build.yml
-      with:
-        env: ${{ inputs.env }}
-        version: ${{ inputs.version }}
-        filename: ${{ needs.SetFilename.outputs.filename }}
+    with:
+      env: ${{ inputs.env }}
+      version: ${{ inputs.version }}
+      filename: ${{ needs.SetFilename.outputs.filename }}
 
   Deploy:
     runs-on: ubuntu-latest
