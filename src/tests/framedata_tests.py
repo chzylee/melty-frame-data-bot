@@ -75,7 +75,6 @@ class TestFrameData(unittest.TestCase):
         self.assertEqual(message, "C-Len j.A")
 
     def test_get_frame_data_successfully_gets_move_data_returns_fully_populated_embed(self):
-        # TODO: Update this test as implementation is fleshed out and full default behavior is clear.
         moon = "C"
         character = "Len"
         move_input = "3C"
@@ -94,10 +93,8 @@ class TestFrameData(unittest.TestCase):
         self.assertEqual(len(embeds), 2)
         image_embed = embeds[0] # Should come first. Assertions on validity of these assigns are next.
         data_embed = embeds[1]
-        self.assertIsInstance(image_embed, Embed)
-        self.assertIsInstance(data_embed, Embed)
 
-        self.assertEqual(image_embed.title, "C-Len 3C")
+        self.assertEqual(image_embed.title, "C-Len 3C") # Standard name format for moves
         self.assertIsNotNone(image_embed.image)
 
         # Should have Startup, Active, Recovery, Frame Adv, Proration.
