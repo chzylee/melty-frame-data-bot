@@ -62,7 +62,7 @@ def lambda_handler(event, context):
             elif command_name == "framedata":
                 framedata = FrameData(data)
                 message_content = framedata.get_move_name()
-                embeds.append(framedata.get_frame_data())
+                embeds = framedata.get_frame_data()
 
             if message_content == None:
                 logger.log_error(constants.COMMAND_NAME_ERROR_MESSAGE)
