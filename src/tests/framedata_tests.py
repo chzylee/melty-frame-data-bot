@@ -1,4 +1,5 @@
 import unittest
+from typing import List
 from discord import Embed
 from commands.framedata import FrameData
 
@@ -89,7 +90,7 @@ class TestFrameData(unittest.TestCase):
         framedata = FrameData(data)
 
         embeds = framedata.get_frame_data()
-        self.assertIsInstance(embeds, list)
+        self.assertIsInstance(embeds, List)
         self.assertEqual(len(embeds), 2)
         data_embed = embeds[0] # Should come first. Assertions on validity of these assigns are next.
         image_embed = embeds[1]

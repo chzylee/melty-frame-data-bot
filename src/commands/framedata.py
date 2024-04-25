@@ -1,4 +1,5 @@
 import requests
+from typing import List
 from discord import Embed
 
 class FrameData:
@@ -24,7 +25,7 @@ class FrameData:
         formatted_move = f"{prefix}{self.move_input[input_start_index:].upper()}"
         return f"{self.moon.upper()}-{self.char_name.capitalize()} {formatted_move}"
 
-    def get_frame_data(self) -> list[Embed]:
+    def get_frame_data(self) -> List[Embed]:
         framedata_embed = Embed(title=self.get_move_name())
         hitbox_image_embed = Embed()
         return [framedata_embed, hitbox_image_embed]
