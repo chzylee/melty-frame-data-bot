@@ -28,7 +28,6 @@ class FrameData:
     def get_frame_data(self) -> List[Embed]:
         framedata_embed = Embed(title=self.get_move_name())
         # TODO: replace with real data
-        hitbox_image = { "url": "https://wiki.gbl.gg/images/1/10/CLen_421D.png" }
-        hitbox_image_embed = Embed(image=hitbox_image)
+        hitbox_image_embed = Embed().set_image(url="https://wiki.gbl.gg/images/1/10/CLen_421D.png")
         return [framedata_embed, hitbox_image_embed]
     
