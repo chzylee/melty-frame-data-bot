@@ -24,6 +24,8 @@ def process_bot_command(data: dict, command_name: str) -> dict:
         logger.log_command_processing_exception(command_name, e)
 
     try:
+        logger.log_message_data(message_content, embeds)
+        
         response = {
             "type": constants.RESPONSE_TYPES["MESSAGE_WITH_SOURCE"],
             "data": {
@@ -35,7 +37,6 @@ def process_bot_command(data: dict, command_name: str) -> dict:
             # to_dict() is on discord.py's Embed class but cannot specify types for python lambdas.
             convert_embed = lambda embed: embed.to_dict()
             response["data"]["embeds"] = [convert_embed(embed) for embed in embeds]
-        logger.log_message_data(response["data"]["content"], response["data"]["embeds"])
 
     except Exception as e:
         logger.log_exception("Error setting response data", e)
