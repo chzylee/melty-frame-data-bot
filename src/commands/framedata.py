@@ -31,10 +31,10 @@ class FrameData:
         hitbox_image_embed.set_image(url="https://wiki.gbl.gg/images/1/10/CLen_421D.png")
 
         framedata_embed = Embed()
-        framedata_embed.add_field(name="First Active", value="6", inline=False)
-        framedata_embed.add_field(name="Active", value="7", inline=False)
-        framedata_embed.add_field(name="Recovery", value="24", inline=False)
-        framedata_embed.add_field(name="Frame Adv", value="-13", inline=False)
-        framedata_embed.add_field(name="Proration", value="78%", inline=False)
+        framedata_embed.add_field(name="First Active", value="6")
+        framedata_embed.add_field(name="Active", value="7")
+        framedata_embed.add_field(name="Recovery", value="24")
+        framedata_embed.add_field(name="Frame Adv", value="-13")
+        framedata_embed.add_field(name="Proration", value="78%")
         return [hitbox_image_embed, framedata_embed]
     

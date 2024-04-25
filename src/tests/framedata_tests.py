@@ -102,6 +102,13 @@ class TestFrameData(unittest.TestCase):
 
         # Should have Startup, Active, Recovery, Frame Adv, Proration.
         self.assertEqual(len(data_embed.fields), 5)
+        # Fields should be ordered.
+        self.assertEqual(data_embed.fields[0].name, "First Active") # Named to match wiki.
+        self.assertEqual(data_embed.fields[1].name, "Active")
+        self.assertEqual(data_embed.fields[2].name, "Recovery")
+        self.assertEqual(data_embed.fields[3].name, "Frame Adv")
+        self.assertEqual(data_embed.fields[4].name, "Proration")
+        self.assertTrue(all(field.inline for field in data_embed.fields))
 
 
 if __name__ == '__main__':
