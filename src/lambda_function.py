@@ -81,10 +81,11 @@ def lambda_handler(event, context):
             for embed in embeds:
                 embed_json = converters.convert_embed_to_json(embed)
                 response["data"]["embeds"].append(embed_json)
+        logger.log_message_data(response["data"]["content"], response["data"]["embeds"])
 
     except Exception as e:
         logger.log_exception("Error setting response data", e)
         raise e
 
-    logger.log_message_data(response["data"]["content"], response["data"]["embeds"])
+    logger.log_response(response)
     return response

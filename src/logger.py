@@ -15,6 +15,9 @@ def log_message_data(message_content: str, embeds: List[Embed]):
     for embed in embeds:
         print(f"{INFO_TAG} {embed.to_dict()}")
 
+def log_response(response: dict):
+    print(f"{INFO_TAG} Response: {response}")
+
 def log_command_match_error(command_name: str):
     print(f"{COMMAND_ERROR_TAG} Failed to match command '{command_name}'")
 
