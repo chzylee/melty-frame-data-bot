@@ -1,4 +1,5 @@
-PUBLIC_KEY = "f65af3e8f227b4a24e3abe88ab35835cf20a9523ee3b6b43054c309ffaac588d" # found on Discord Application -> General Information page
+# found on Discord Application -> General Information page
+PUBLIC_KEY = "652b00ff77b759a40d67c80271a60ff8d919356dfca21a1a86c7a8f83e2ea6b8"
 PING_PONG = { "type": 1 }
 RESPONSE_TYPES =  { 
     "PONG": 1, 
