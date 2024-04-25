@@ -26,8 +26,15 @@ class FrameData:
         return f"{self.moon.upper()}-{self.char_name.capitalize()} {formatted_move}"
 
     def get_frame_data(self) -> List[Embed]:
-        framedata_embed = Embed(title=self.get_move_name())
         # TODO: replace with real data
-        hitbox_image_embed = Embed().set_image(url="https://wiki.gbl.gg/images/1/10/CLen_421D.png")
-        return [framedata_embed, hitbox_image_embed]
+        hitbox_image_embed = Embed(title=self.get_move_name())
+        hitbox_image_embed.set_image(url="https://wiki.gbl.gg/images/1/10/CLen_421D.png")
+
+        framedata_embed = Embed()
+        framedata_embed.add_field(name="First Active", value="6", inline=False)
+        framedata_embed.add_field(name="Active", value="7", inline=False)
+        framedata_embed.add_field(name="Recovery", value="24", inline=False)
+        framedata_embed.add_field(name="Frame Adv", value="-13", inline=False)
+        framedata_embed.add_field(name="Proration", value="78%", inline=False)
+        return [hitbox_image_embed, framedata_embed]
     

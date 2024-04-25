@@ -92,12 +92,16 @@ class TestFrameData(unittest.TestCase):
         embeds = framedata.get_frame_data()
         self.assertIsInstance(embeds, List)
         self.assertEqual(len(embeds), 2)
-        data_embed = embeds[0] # Should come first. Assertions on validity of these assigns are next.
-        image_embed = embeds[1]
-        self.assertIsInstance(data_embed, Embed)
+        image_embed = embeds[0] # Should come first. Assertions on validity of these assigns are next.
+        data_embed = embeds[1]
         self.assertIsInstance(image_embed, Embed)
+        self.assertIsInstance(data_embed, Embed)
 
-        self.assertEqual(data_embed.title, "C-Len 3C")
+        self.assertEqual(image_embed.title, "C-Len 3C")
+        self.assertIsNotNone(image_embed.image)
+
+        # Should have Startup, Active, Recovery, Frame Adv, Proration.
+        self.assertEqual(len(data_embed.fields), 5)
 
 
 if __name__ == '__main__':
