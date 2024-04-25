@@ -69,23 +69,22 @@ def lambda_handler(event, context):
         except Exception as e:
             logger.log_command_processing_exception(command_name, e)
 
-        try:
-            response = {
-                "type": constants.RESPONSE_TYPES["MESSAGE_WITH_SOURCE"],
-                "data": { 
-                    "content": message_content,
-                    "embeds": []
-                }
+    try:
+        response = {
+            "type": constants.RESPONSE_TYPES["MESSAGE_WITH_SOURCE"],
+            "data": { 
+                "content": message_content,
+                "embeds": []
             }
-            
-            if len(embeds) > 0:
-                for embed in embeds:
-                    embed_json = converters.convert_embed_to_json(embed)
-                    response["data"]["embeds"].append(embed_json)
-            
-            logger.log_message_data(message_content, embeds)
+        }
+        if len(embeds) > 0:
+            for embed in embeds:
+                embed_json = converters.convert_embed_to_json(embed)
+                response["data"]["embeds"].append(embed_json)
 
-        except Exception as e:
-            logger.log_exception("Error setting response data", e)
+    except Exception as e:
+        logger.log_exception("Error setting response data", e)
+        raise e
 
+    logger.log_message_data(response["data"]["content"], response["data"]["embeds"])
     return response
