@@ -1,7 +1,7 @@
 
 import logger
 import constants
-from commands import teatime
+from commands import teatime as TeaTime
 from commands.framedata import FrameData
 
 
@@ -12,7 +12,7 @@ def process_bot_command(data: dict, command_name: str) -> dict:
 
     try:
         if command_name == "teatime":
-            message_content = teatime.have_teatime()
+            message_content = TeaTime.have_teatime()
         elif command_name == "framedata":
             framedata = FrameData(data)
             message_content = framedata.get_move_name()
@@ -25,7 +25,7 @@ def process_bot_command(data: dict, command_name: str) -> dict:
 
     try:
         logger.log_message_data(message_content, embeds)
-        
+
         response = {
             "type": constants.RESPONSE_TYPES["MESSAGE_WITH_SOURCE"],
             "data": {
