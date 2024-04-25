@@ -29,3 +29,4 @@ class FrameData:
         framedata_embed = Embed(title=self.get_move_name())
         hitbox_image_embed = Embed()
         return [framedata_embed, hitbox_image_embed]
+    

@@ -3,7 +3,8 @@ from nacl.exceptions import BadSignatureError
 import constants
 import logger
 from data_helpers import converters
-from commands import teatime, framedata
+from commands import teatime
+from commands.framedata import FrameData
 
 def verify_signature(event):
     raw_body = event["rawBody"]
@@ -59,9 +60,9 @@ def lambda_handler(event, context):
             if command_name == "teatime":
                 message_content = teatime.have_teatime()
             elif command_name == "framedata":
-                char_move = framedata.get_char_and_move(data)
-                message_content = framedata.get_move_message(char_move)
-                embeds.append(framedata.get_frame_data(char_move))
+                framedata = FrameData(data)
+                message_content = framedata.get_move_name()
+                embeds.append(framedata.get_frame_data())
 
             if message_content == None:
                 logger.log_error(constants.COMMAND_NAME_ERROR_MESSAGE)
