@@ -2,9 +2,7 @@ from nacl.signing import VerifyKey
 from nacl.exceptions import BadSignatureError
 import constants
 import logger
-from data_helpers import converters
-from commands import teatime
-from commands.framedata import FrameData
+import bot
 
 def verify_signature(event):
     raw_body = event["rawBody"]
@@ -18,18 +16,17 @@ def verify_signature(event):
         raise Exception("Verification failed")
 
 
-def is_lambda_request_event(event):
+def is_lambda_request_event(event) -> bool:
     if event["body-json"]:
         return True
     return False
 
 
-def is_ping_pong(body):
+def is_ping_pong(body: dict) -> bool:
     if body["type"]:
         if body["type"] == 1:
             return True
     return False
-
 
 def lambda_handler(event, context):
     print(f"event {event}") # debug print
@@ -55,37 +52,7 @@ def lambda_handler(event, context):
         data = body["data"]
         command_name = data["name"]
         logger.log_command(command_name)
-
-        try:
-            if command_name == "teatime":
-                message_content = teatime.have_teatime()
-            elif command_name == "framedata":
-                framedata = FrameData(data)
-                message_content = framedata.get_move_name()
-                embeds = framedata.get_frame_data()
-            else:
-                logger.log_command_match_error(command_name)
-
-        except Exception as e:
-            logger.log_command_processing_exception(command_name, e)
-
-    try:
-        response = {
-            "type": constants.RESPONSE_TYPES["MESSAGE_WITH_SOURCE"],
-            "data": { 
-                "content": message_content,
-                "embeds": []
-            }
-        }
-        if len(embeds) > 0:
-            for embed in embeds:
-                embed_json = converters.convert_embed_to_json(embed)
-                response["data"]["embeds"].append(embed_json)
-        logger.log_message_data(response["data"]["content"], response["data"]["embeds"])
-
-    except Exception as e:
-        logger.log_exception("Error setting response data", e)
-        raise e
+        response = bot.process_bot_command(data, command_name)
 
     logger.log_response(response)
     return response
