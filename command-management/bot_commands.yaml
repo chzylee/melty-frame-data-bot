@@ -5,6 +5,10 @@
 - name: framedata
   description: Gets frame data of the given char + move from Mizuumi.
   options:
+    - name: moon
+      description: Moon variant of the character.
+      type: 3 # string
+      required: true
     - name: character
       description: Character to get frame data for.
       type: 3 # string

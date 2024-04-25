@@ -1,3 +1,3 @@
 from collections import namedtuple
 
-MeltyMove = namedtuple("MeltyMove", ["char", "input"])
+MeltyMove = namedtuple("MeltyMove", ["moon", "char", "input"])
