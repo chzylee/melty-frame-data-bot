@@ -8,5 +8,3 @@ RESPONSE_TYPES =  {
     "MESSAGE_WITH_SOURCE": 4, 
     "ACK_WITH_SOURCE": 5
 }
-
-COMMAND_NAME_ERROR_MESSAGE = "Failed to match command name"

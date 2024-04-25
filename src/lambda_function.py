@@ -48,13 +48,13 @@ def lambda_handler(event, context):
     reponse = None
     embeds = []
 
-    if is_ping_pong(body):
+    if is_ping_pong(body): # Discord uses "ping pong" message to verify bot.
         print("is_ping_pong: True")
         response = constants.PING_PONG
     else:
         data = body["data"]
         command_name = data["name"]
-        logger.log_command(command_name=command_name)
+        logger.log_command(command_name)
 
         try:
             if command_name == "teatime":
@@ -63,24 +63,29 @@ def lambda_handler(event, context):
                 framedata = FrameData(data)
                 message_content = framedata.get_move_name()
                 embeds = framedata.get_frame_data()
+            else:
+                logger.log_command_match_error(command_name)
 
-            if message_content == None:
-                logger.log_error(constants.COMMAND_NAME_ERROR_MESSAGE)
         except Exception as e:
-            print("Error occurred: ", e)
-            message_content = f"Error occurred: {e}"
+            logger.log_command_processing_exception(command_name, e)
 
-        response = {
-            "type": constants.RESPONSE_TYPES["MESSAGE_WITH_SOURCE"],
-            "data": { 
-                "content": message_content,
-                "embeds": []
+        try:
+            response = {
+                "type": constants.RESPONSE_TYPES["MESSAGE_WITH_SOURCE"],
+                "data": { 
+                    "content": message_content,
+                    "embeds": []
+                }
             }
-        }
-        
-        if len(embeds) > 0:
-            for embed in embeds:
-                embed_json = converters.convert_embed_to_json(embed)
-                response["data"]["embeds"].append(embed_json)
+            
+            if len(embeds) > 0:
+                for embed in embeds:
+                    embed_json = converters.convert_embed_to_json(embed)
+                    response["data"]["embeds"].append(embed_json)
+            
+            logger.log_message_data(message_content, embeds)
+
+        except Exception as e:
+            logger.log_exception("Error setting response data", e)
 
     return response
