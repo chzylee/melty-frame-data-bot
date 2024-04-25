@@ -25,7 +25,9 @@ class TestBotProcess(unittest.TestCase):
 
         response = bot.process_bot_command(data, "framedata")
 
-        self.assertIsInstance(response["data"]["content"], str)
+        response_content = response["data"]["content"]
+        self.assertIsInstance(response_content, str)
+        self.assertGreater(len(response_content), 0)
 
         response_embeds = response["data"]["embeds"]
         self.assertIsInstance(response_embeds, List)
