@@ -1,4 +1,5 @@
 import requests
+from data import mizuumi
 from typing import List
 from discord import Embed
 
@@ -26,6 +27,9 @@ class FrameData:
         return f"{self.moon.upper()}-{self.char_name.capitalize()} {formatted_move}"
 
     def get_frame_data(self) -> List[Embed]:
+        char_url = mizuumi.get_character_url(self.char_name, self.moon)
+        # TODO: make request to this url and get data.
+
         # TODO: replace with real data
         framedata_embed = Embed(title=self._get_move_name())
         framedata_embed.set_image(url="https://wiki.gbl.gg/images/1/10/CLen_421D.png")

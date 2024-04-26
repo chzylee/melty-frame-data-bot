@@ -2,7 +2,9 @@
 import logger
 import constants
 from commands import teatime as TeaTime
+from commands import characterlist as CharacterList
 from commands.framedata import FrameData
+from models.errors import UserInputException
 
 
 def process_bot_command(data: dict, command_name: str) -> dict:
@@ -13,12 +15,19 @@ def process_bot_command(data: dict, command_name: str) -> dict:
     try:
         if command_name == "teatime":
             message_content = TeaTime.have_teatime()
+        elif command_name == "characterlist":
+            message_content = CharacterList.get_allowed_names()
         elif command_name == "framedata":
             framedata = FrameData(data)
             embeds = framedata.get_frame_data()
         else:
             logger.log_command_match_error(command_name)
 
+    except UserInputException as e:
+        logger.log_user_input_exception(command_name, e)
+        # Error type suggests we want to tell user about error.
+        message_content = e.message
+        embeds = [] # Empty embeds to return just error message
     except Exception as e:
         logger.log_command_processing_exception(command_name, e)
 

@@ -1,6 +1,7 @@
 import logging
 from typing import List
 from discord import Embed
+from models.errors import UserInputException
 
 INFO_TAG = "[INFO] |"
 COMMAND_ERROR_TAG = "[COMMAND_ERROR] |"
@@ -26,6 +27,9 @@ def log_command_processing_exception(command_name: str, exception: Exception):
         message = f"{COMMAND_ERROR_TAG} Error processing command '{command_name}'",
         exc_info = exception
     )
+
+def log_user_input_exception(command_name: str, exception: UserInputException):
+    print(f"{COMMAND_ERROR_TAG} Command '{command_name}' raised user input error: {exception}")
 
 def log_exception(message: str, exception: Exception):
     print(f"{GENERAL_ERROR_TAG} {message}")

@@ -16,7 +16,6 @@
           value: H
         - name: Full
           value: F
-
     - name: character
       description: Character to get frame data for.
       type: 3 # string
@@ -25,3 +24,7 @@
       description: Input of character's move to get frame data for.
       type: 3 # string
       required: true
+
+- name: characterlist
+  description: Gets list of character names allowed as input to framedata.
+  options: []
