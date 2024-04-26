@@ -1,5 +1,4 @@
 import re
-from re import Match
 from typing import Union
 from data import inputs
 
@@ -15,17 +14,17 @@ class InputComponents:
         self.button = button
 
     @classmethod
-    def _get_air_component_match(cls, input: str) -> Union[Match[str], None]:
+    def _get_air_component_match(cls, input: str) -> Union[re.Match, None]:
         air_match = re.search(r"j.", input)
         return air_match if air_match else None
 
     @classmethod
-    def _get_directions_component_match(cls, input: str) -> Union[Match[str], None]:
+    def _get_directions_component_match(cls, input: str) -> Union[re.Match, None]:
         directions_match = re.search(r"(63214)|([1-9]{1,3})", input)
         return directions_match if directions_match else None
 
     @classmethod
-    def _get_button_component_match(cls, input: str) -> Union[Match[str], None]:
+    def _get_button_component_match(cls, input: str) -> Union[re.Match, None]:
         button_match = re.search(r"(\[[ABCD]\])|[ABCD]", input)
         return button_match if button_match else None
 
