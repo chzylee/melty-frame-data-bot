@@ -1,4 +1,4 @@
 requests
 pynacl
 discord.py
-beautifulsoup
+BeautifulSoup4
