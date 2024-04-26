@@ -1,5 +1,5 @@
 import unittest
-from models.input import InputComponents
+from src.models.inputcomponents import InputComponents
 
 class TestInputComponents(unittest.TestCase):
     # Leaving the responsibility of value validation to other methods.
@@ -7,37 +7,37 @@ class TestInputComponents(unittest.TestCase):
 
     # Test ability to build from each variety of move.
     def test_from_input_string_given_normal_input_builds_instance(self):
-        input = InputComponents.from_input_string("2B")
+        input = InputComponents.from_string("2B")
         self.assertIsNone(input.air)
         self.assertEqual(input.directions, "2")
         self.assertEqual(input.button, "B")
 
     def test_from_input_string_given_charged_normal_input_builds_instance(self):
-        input = InputComponents.from_input_string("3[C]")
+        input = InputComponents.from_string("3[C]")
         self.assertIsNone(input.air)
         self.assertEqual(input.directions, "3")
         self.assertEqual(input.button, "[C]")
 
     def test_from_input_string_given_ground_special_input_builds_instance(self):
-        input = InputComponents.from_input_string("421B")
+        input = InputComponents.from_string("421B")
         self.assertIsNone(input.air)
         self.assertEqual(input.directions, "421")
         self.assertEqual(input.button, "B")
 
     def test_from_input_string_given_air_normal_input_builds_instance(self):
-        input = InputComponents.from_input_string("j.A")
+        input = InputComponents.from_string("j.A")
         self.assertEqual(input.air, "j.")
         self.assertIsNone(input.directions)
         self.assertEqual(input.button, "A")
 
     def test_from_input_string_given_air_cmd_normal_input_builds_instance(self):
-        input = InputComponents.from_input_string("j.2B")
+        input = InputComponents.from_string("j.2B")
         self.assertEqual(input.air, "j.")
         self.assertEqual(input.directions, "2")
         self.assertEqual(input.button, "B")
 
     def test_from_input_string_given_air_special_input_builds_instance(self):
-        input = InputComponents.from_input_string("j.214A")
+        input = InputComponents.from_string("j.214A")
         self.assertEqual(input.air, "j.")
         self.assertEqual(input.directions, "214")
         self.assertEqual(input.button, "A")

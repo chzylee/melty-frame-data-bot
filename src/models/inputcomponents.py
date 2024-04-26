@@ -14,7 +14,7 @@ class InputComponents:
         self.button = button
 
     @classmethod
-    def from_input_string(cls, input: str) -> "InputComponents":
+    def from_string(cls, input: str) -> "InputComponents":
         air_match = re.search(r"j.", input)
         directions_match = re.search(r"[1-9]{1,3}", input)
         button_match = re.search(r"(\[[ABCD]\])|[ABCD]", input)
