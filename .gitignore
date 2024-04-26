@@ -1,6 +1,7 @@
 # Local development/testing
 local_env.py
 *.zip
+*.ipynb
 # May save wiki pages locally for reference/testing.
 *.html
 
