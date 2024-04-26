@@ -33,7 +33,10 @@ class FrameData:
             raise UserInputException(f"Invalid move input '{move_input}'")
         self.move_input = InputComponents.from_string(move_input)
 
-    def _parse_frame_data_from_wiki(input: InputComponents, soup: BeautifulSoup) -> MoveFrameData:
+    def _parse_frame_data_from_wiki(self, soup: BeautifulSoup) -> MoveFrameData:
+        # Inputs are labeled differently on wiki pages for charged moves and specials.
+        move_search_tag = "small" if self.move_input.is_charged() or self.move_input.is_special() else "big"
+        input_labels = [tag.text for tag in soup.find_all(move_search_tag)]
         return
 
     def get_frame_data(self) -> List[Embed]:
