@@ -1,7 +1,9 @@
 import requests
+from bs4 import BeautifulSoup
 from data import mizuumi
 from typing import List
 from discord import Embed
+from models.framedata import MoveFrameData
 
 class FrameData:
     moon: str
@@ -14,7 +16,7 @@ class FrameData:
         self.char_name = data["options"][1]["value"]
         self.move_input = data["options"][2]["value"]
 
-    def _parse_frame_data_from_wiki(html: str):
+    def _parse_frame_data_from_wiki(soup: BeautifulSoup) -> MoveFrameData:
         return
 
     def get_move_name(self) -> str:
@@ -32,7 +34,7 @@ class FrameData:
     def get_frame_data(self) -> List[Embed]:
         char_wiki_url = mizuumi.get_character_url(self.char_name, self.moon)
         wiki_response = requests.get(char_wiki_url)
-        wiki_html = wiki_response.text
+        wiki_soup = BeautifulSoup(wiki_response.text, "html")
         # TODO: make request to this url and get data.
 
         # TODO: replace with real data
