@@ -14,7 +14,10 @@ class FrameData:
         self.char_name = data["options"][1]["value"]
         self.move_input = data["options"][2]["value"]
 
-    def _get_move_name(self) -> str:
+    def _parse_frame_data_from_wiki(html: str):
+        return
+
+    def get_move_name(self) -> str:
         input_start_index = 0
         prefix = ""
         if self.move_input[0].lower() == "j":
@@ -27,11 +30,16 @@ class FrameData:
         return f"{self.moon.upper()}-{self.char_name.capitalize()} {formatted_move}"
 
     def get_frame_data(self) -> List[Embed]:
-        char_url = mizuumi.get_character_url(self.char_name, self.moon)
+        char_wiki_url = mizuumi.get_character_url(self.char_name, self.moon)
+        wiki_response = requests.get(char_wiki_url)
+        wiki_html = wiki_response.text
         # TODO: make request to this url and get data.
 
         # TODO: replace with real data
-        framedata_embed = Embed(title=self._get_move_name())
+        framedata_embed = Embed(
+            title=self.get_move_name(),
+            url=char_wiki_url
+        )
         framedata_embed.set_image(url="https://wiki.gbl.gg/images/1/10/CLen_421D.png")
         framedata_embed.add_field(name="First Active", value="6")
         framedata_embed.add_field(name="Active", value="7")

@@ -94,6 +94,7 @@ class TestFrameData(unittest.TestCase):
         embed = embeds[0]
 
         self.assertEqual(embed.title, "C-Len 3C") # Standard name format for moves
+        self.assertGreater(len(embed.url), 0)
         self.assertIsNotNone(embed.image)
 
         # Should have Startup, Active, Recovery, Frame Adv, Proration.
