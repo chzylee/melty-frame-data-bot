@@ -43,7 +43,7 @@ jobs:
           echo "filename=$FILENAME" >> $GITHUB_OUTPUT
           echo "Zipping code into $FILENAME"
           cd src
-          zip -r ../$FILENAME *.py commands data_helpers
+          zip -r ../$FILENAME .
         # Put file in starting working directory.
 
       - name: Check if file exists
