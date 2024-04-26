@@ -1,5 +1,5 @@
 import unittest
-from src.models.inputcomponents import InputComponents
+from models.inputcomponents import InputComponents
 
 class TestInputComponents(unittest.TestCase):
     # Leaving the responsibility of value validation to other methods.

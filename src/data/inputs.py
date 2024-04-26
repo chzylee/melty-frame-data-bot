@@ -38,3 +38,11 @@ def match_air_special(input: str) -> str:
     air_special_regex = r"[Jj]\.?[1-6]{2,3}(([AaBbCc])|(\[[AaBbCc]\]))" # Start with J since we made input upper.
     match = _match_air_move(input, air_special_regex)
     return match
+
+input_matchers = [
+    match_ground_normal,
+    match_air_normal,
+    match_ground_special,
+    match_air_cmd_normal,
+    match_air_special
+]
