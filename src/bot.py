@@ -15,7 +15,6 @@ def process_bot_command(data: dict, command_name: str) -> dict:
             message_content = TeaTime.have_teatime()
         elif command_name == "framedata":
             framedata = FrameData(data)
-            message_content = framedata.get_move_name()
             embeds = framedata.get_frame_data()
         else:
             logger.log_command_match_error(command_name)

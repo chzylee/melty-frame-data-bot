@@ -13,7 +13,7 @@ class FrameData:
         self.char_name = data["options"][1]["value"]
         self.move_input = data["options"][2]["value"]
 
-    def get_move_name(self) -> str:
+    def _get_move_name(self) -> str:
         input_start_index = 0
         prefix = ""
         if self.move_input[0].lower() == "j":
@@ -27,14 +27,11 @@ class FrameData:
 
     def get_frame_data(self) -> List[Embed]:
         # TODO: replace with real data
-        hitbox_image_embed = Embed(title=self.get_move_name())
-        hitbox_image_embed.set_image(url="https://wiki.gbl.gg/images/1/10/CLen_421D.png")
-
-        framedata_embed = Embed()
+        framedata_embed = Embed(title=self._get_move_name())
+        framedata_embed.set_image(url="https://wiki.gbl.gg/images/1/10/CLen_421D.png")
         framedata_embed.add_field(name="First Active", value="6")
         framedata_embed.add_field(name="Active", value="7")
         framedata_embed.add_field(name="Recovery", value="24")
         framedata_embed.add_field(name="Frame Adv", value="-13")
         framedata_embed.add_field(name="Proration", value="78%")
-        return [hitbox_image_embed, framedata_embed]
-    
+        return [framedata_embed]

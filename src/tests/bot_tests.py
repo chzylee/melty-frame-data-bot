@@ -25,13 +25,10 @@ class TestBotProcess(unittest.TestCase):
 
         response = bot.process_bot_command(data, "framedata")
 
-        response_content = response["data"]["content"]
-        self.assertIsInstance(response_content, str)
-        self.assertGreater(len(response_content), 0)
+        self.assertIsNone(response["data"]["content"])
 
         response_embeds = response["data"]["embeds"]
         self.assertIsInstance(response_embeds, List)
-        self.assertEqual(len(response_embeds), 2) # 1 for image and 1 for framedata.
-        # Check they are dicts to ensure this method returned JSON serializable data.
+        self.assertEqual(len(response_embeds), 1) # 1 for image and 1 for framedata.
+        # Check Embed is dict to ensure this method returned JSON serializable data.
         self.assertIsInstance(response_embeds[0], dict)
-        self.assertIsInstance(response_embeds[1], dict)

@@ -33,10 +33,10 @@ class TestFrameData(unittest.TestCase):
             ]
         }
         framedata = FrameData(data)
-        message = framedata.get_move_name()
+        message = framedata._get_move_name()
         # Hardcoding message based on above data to check to avoid forcing logic into test.
         self.assertEqual(message, "C-Len 3C")
-    
+
     def test_get_move_name_given_air_move_returns_correctly_formatted_name(self):
         data = {
             "options": [
@@ -46,10 +46,10 @@ class TestFrameData(unittest.TestCase):
             ]
         }
         framedata = FrameData(data)
-        message = framedata.get_move_name()
+        message = framedata._get_move_name()
         # Hardcoding message based on above data to check to avoid forcing logic into test.
         self.assertEqual(message, "C-Len j.236C")
-    
+
     def test_get_move_name_given_shorthand_air_normal_returns_correctly_formatted_name(self):
         data = {
             "options": [
@@ -59,9 +59,9 @@ class TestFrameData(unittest.TestCase):
             ]
         }
         framedata = FrameData(data)
-        message = framedata.get_move_name()
+        message = framedata._get_move_name()
         self.assertEqual(message, "C-Len j.B")
-    
+
     def test_get_move_name_given_nonstandard_capitalization_returns_correctly_formatted_name(self):
         data = {
             "options": [
@@ -71,7 +71,7 @@ class TestFrameData(unittest.TestCase):
             ]
         }
         framedata = FrameData(data)
-        message = framedata.get_move_name()
+        message = framedata._get_move_name()
         self.assertEqual(message, "C-Len j.A")
 
     def test_get_frame_data_successfully_gets_move_data_returns_fully_populated_embed(self):
@@ -90,22 +90,21 @@ class TestFrameData(unittest.TestCase):
 
         embeds = framedata.get_frame_data()
         self.assertIsInstance(embeds, List)
-        self.assertEqual(len(embeds), 2)
-        image_embed = embeds[0] # Should come first. Assertions on validity of these assigns are next.
-        data_embed = embeds[1]
+        self.assertEqual(len(embeds), 1)
+        embed = embeds[0]
 
-        self.assertEqual(image_embed.title, "C-Len 3C") # Standard name format for moves
-        self.assertIsNotNone(image_embed.image)
+        self.assertEqual(embed.title, "C-Len 3C") # Standard name format for moves
+        self.assertIsNotNone(embed.image)
 
         # Should have Startup, Active, Recovery, Frame Adv, Proration.
-        self.assertEqual(len(data_embed.fields), 5)
+        self.assertEqual(len(embed.fields), 5)
         # Fields should be ordered.
-        self.assertEqual(data_embed.fields[0].name, "First Active") # Named to match wiki.
-        self.assertEqual(data_embed.fields[1].name, "Active")
-        self.assertEqual(data_embed.fields[2].name, "Recovery")
-        self.assertEqual(data_embed.fields[3].name, "Frame Adv")
-        self.assertEqual(data_embed.fields[4].name, "Proration")
-        self.assertTrue(all(field.inline for field in data_embed.fields))
+        self.assertEqual(embed.fields[0].name, "First Active") # Named to match wiki.
+        self.assertEqual(embed.fields[1].name, "Active")
+        self.assertEqual(embed.fields[2].name, "Recovery")
+        self.assertEqual(embed.fields[3].name, "Frame Adv")
+        self.assertEqual(embed.fields[4].name, "Proration")
+        self.assertTrue(all(field.inline for field in embed.fields))
 
 
 if __name__ == '__main__':
