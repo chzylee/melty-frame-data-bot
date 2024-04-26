@@ -1,6 +1,8 @@
 # Local development/testing
 local_env.py
 *.zip
+# May save wiki pages locally for reference/testing.
+*.html
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
