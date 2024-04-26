@@ -6,41 +6,47 @@ class TestInputComponents(unittest.TestCase):
     # This class does not interact with any data sources.
 
     # Test ability to build from each variety of move.
-    def test_from_input_string_given_normal_input_builds_instance(self):
+    def test_from_string_given_normal_input_builds_instance(self):
         input = InputComponents.from_string("2B")
         self.assertIsNone(input.air)
         self.assertEqual(input.directions, "2")
         self.assertEqual(input.button, "B")
 
-    def test_from_input_string_given_charged_normal_input_builds_instance(self):
+    def test_from_string_given_charged_normal_input_builds_instance(self):
         input = InputComponents.from_string("3[C]")
         self.assertIsNone(input.air)
         self.assertEqual(input.directions, "3")
         self.assertEqual(input.button, "[C]")
 
-    def test_from_input_string_given_ground_special_input_builds_instance(self):
+    def test_from_string_given_ground_special_input_builds_instance(self):
         input = InputComponents.from_string("421B")
         self.assertIsNone(input.air)
         self.assertEqual(input.directions, "421")
         self.assertEqual(input.button, "B")
 
-    def test_from_input_string_given_air_normal_input_builds_instance(self):
+    def test_from_string_given_air_normal_input_builds_instance(self):
         input = InputComponents.from_string("j.A")
         self.assertEqual(input.air, "j.")
         self.assertIsNone(input.directions)
         self.assertEqual(input.button, "A")
 
-    def test_from_input_string_given_air_cmd_normal_input_builds_instance(self):
+    def test_from_string_given_air_cmd_normal_input_builds_instance(self):
         input = InputComponents.from_string("j.2B")
         self.assertEqual(input.air, "j.")
         self.assertEqual(input.directions, "2")
         self.assertEqual(input.button, "B")
 
-    def test_from_input_string_given_air_special_input_builds_instance(self):
+    def test_from_string_given_air_special_input_builds_instance(self):
         input = InputComponents.from_string("j.214A")
         self.assertEqual(input.air, "j.")
         self.assertEqual(input.directions, "214")
         self.assertEqual(input.button, "A")
+
+    def test_from_string_given_half_circle_special_input_builds_instance(self):
+        input = InputComponents.from_string("63214C")
+        self.assertIsNone(input.air)
+        self.assertEqual(input.directions, "63214")
+        self.assertEqual(input.button, "C")
 
     def test_is_normal_given_ground_normal_input_returns_true(self):
         input = InputComponents(directions="3", button="C")
@@ -72,6 +78,10 @@ class TestInputComponents(unittest.TestCase):
 
     def test_is_special_given_button_is_special_returns_true(self):
         input = InputComponents(directions="421", button="B")
+        self.assertTrue(input.is_special())
+
+    def test_is_special_given_half_circle_special_returns_true(self):
+        input = InputComponents.from_string("63214C")
         self.assertTrue(input.is_special())
 
     def test_is_special_given_button_is_not_special_returns_false(self):
