@@ -22,57 +22,9 @@ class TestFrameData(unittest.TestCase):
         self.assertIsNotNone(framedata.move_input)
         self.assertEqual(framedata.moon, moon)
         self.assertEqual(framedata.char_name, character)
-        self.assertEqual(framedata.move_input, move_input)
-
-    def test_get_move_name_given_ground_normal_returns_correctly_formatted_name(self):
-        data = {
-            "options": [
-                { "value": "C" },
-                { "value": "Len" },
-                { "value": "3C" }
-            ]
-        }
-        framedata = FrameData(data)
-        message = framedata.get_move_name()
-        # Hardcoding message based on above data to check to avoid forcing logic into test.
-        self.assertEqual(message, "C-Len 3C")
-
-    def test_get_move_name_given_air_move_returns_correctly_formatted_name(self):
-        data = {
-            "options": [
-                { "value": "C" },
-                { "value": "Len" },
-                { "value": "j.236C" }
-            ]
-        }
-        framedata = FrameData(data)
-        message = framedata.get_move_name()
-        # Hardcoding message based on above data to check to avoid forcing logic into test.
-        self.assertEqual(message, "C-Len j.236C")
-
-    def test_get_move_name_given_shorthand_air_normal_returns_correctly_formatted_name(self):
-        data = {
-            "options": [
-                { "value": "C" },
-                { "value": "Len" },
-                { "value": "jB" } # Different from standard j.B format
-            ]
-        }
-        framedata = FrameData(data)
-        message = framedata.get_move_name()
-        self.assertEqual(message, "C-Len j.B")
-
-    def test_get_move_name_given_nonstandard_capitalization_returns_correctly_formatted_name(self):
-        data = {
-            "options": [
-                { "value": "c" }, # Differs from standard capital moon initial format
-                { "value": "lEn" }, # Handle case of weird capitalization in name.
-                { "value": "JA" } # Different from standard j.A format.
-            ]
-        }
-        framedata = FrameData(data)
-        message = framedata.get_move_name()
-        self.assertEqual(message, "C-Len j.A")
+        self.assertEqual(str(framedata.move_input), move_input)
+        self.assertEqual(framedata.move_input.directions, "3")
+        self.assertEqual(framedata.move_input.button, "C")
 
     def test_get_frame_data_successfully_gets_move_data_returns_fully_populated_embed(self):
         moon = "C"
