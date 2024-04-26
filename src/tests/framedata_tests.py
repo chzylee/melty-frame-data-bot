@@ -33,7 +33,7 @@ class TestFrameData(unittest.TestCase):
             ]
         }
         framedata = FrameData(data)
-        message = framedata._get_move_name()
+        message = framedata.get_move_name()
         # Hardcoding message based on above data to check to avoid forcing logic into test.
         self.assertEqual(message, "C-Len 3C")
 
@@ -46,7 +46,7 @@ class TestFrameData(unittest.TestCase):
             ]
         }
         framedata = FrameData(data)
-        message = framedata._get_move_name()
+        message = framedata.get_move_name()
         # Hardcoding message based on above data to check to avoid forcing logic into test.
         self.assertEqual(message, "C-Len j.236C")
 
@@ -59,7 +59,7 @@ class TestFrameData(unittest.TestCase):
             ]
         }
         framedata = FrameData(data)
-        message = framedata._get_move_name()
+        message = framedata.get_move_name()
         self.assertEqual(message, "C-Len j.B")
 
     def test_get_move_name_given_nonstandard_capitalization_returns_correctly_formatted_name(self):
@@ -71,7 +71,7 @@ class TestFrameData(unittest.TestCase):
             ]
         }
         framedata = FrameData(data)
-        message = framedata._get_move_name()
+        message = framedata.get_move_name()
         self.assertEqual(message, "C-Len j.A")
 
     def test_get_frame_data_successfully_gets_move_data_returns_fully_populated_embed(self):
