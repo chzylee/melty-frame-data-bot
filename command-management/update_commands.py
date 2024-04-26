@@ -30,8 +30,9 @@ headers = {"Authorization": f"Bot {bot_token}", "Content-Type": "application/jso
 
 # Send the POST request for each command
 for command in commands:
+    print(f"Updating command: {command}")
     response = requests.post(url, json=command, headers=headers)
     command_name = command["name"]
-    print(f"Command {command_name} created: {response.status_code}")
+    print(f"Command {command_name} created/updated: {response.status_code}")
 
 print(response.json())

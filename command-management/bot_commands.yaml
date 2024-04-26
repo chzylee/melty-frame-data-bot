@@ -9,11 +9,19 @@
       description: Moon variant of the character.
       type: 3 # string
       required: true
+      choices:
+        - name: Crescent
+          value: C
+        - name: Half
+          value: H
+        - name: Full
+          value: F
+
     - name: character
       description: Character to get frame data for.
       type: 3 # string
       required: true
     - name: move
-      description: Move of the character to get frame data for.
+      description: Input of character's move to get frame data for.
       type: 3 # string
       required: true
