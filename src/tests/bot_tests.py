@@ -27,14 +27,8 @@ class TestBotProcess(unittest.TestCase):
         self.assertGreater(len(response["data"]["content"]), 0)
 
     def test_process_bot_command_given_characterlist_command_returns_text_message(self):
-        data = {
-            "guild_id": "1232882434857631755",
-            "id": "1232889478297948221",
-            "name": "characterlist",
-            "type": 1
-        }
-
-        response = bot.process_bot_command(data, "characterlist")
+        # Passing empty data as it should not be needed
+        response = bot.process_bot_command({}, "characterlist")
         self.assertGreater(len(response["data"]["content"]), 0)
 
     def test_process_bot_command_given_framedata_command_with_options_returns_framedata_response(self):
