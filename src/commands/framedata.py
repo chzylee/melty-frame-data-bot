@@ -43,8 +43,8 @@ class FrameData:
         char_path = mizuumi.get_char_path(self.char_name)
         db_key = {
             # "S" => string value
-            constants.DYNAMODB_PARTITION_KEY: { "S": char_path },
-            constants.DYNAMODB_SORT_KEY: { "S": moon_path }
+            constants.DYNAMODB_PARTITION_KEY: char_path ,
+            constants.DYNAMODB_SORT_KEY: moon_path
         }
         print(f"DynamoDB request with key: {db_key}")
         db_item = table.get_item(
