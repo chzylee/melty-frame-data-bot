@@ -36,7 +36,7 @@ class FrameData:
         self.dynamodb = dynamodb
 
     def _query_frame_data(self) -> MoveFrameData:
-        dynamodb = boto3.client('dynamodb', region_name='us-east-2')
+        table = self.dynamodb.Table(constants.DYNAMODB_TABLE_NAME)
         moon_path = mizuumi.get_moon_path(self.moon)
         char_path = mizuumi.get_char_path(self.char_name)
         db_key = {
@@ -45,8 +45,7 @@ class FrameData:
             constants.DYNAMODB_SORT_KEY: { "S": moon_path }
         }
         print(f"DynamoDB request with key: {db_key}")
-        db_item = dynamodb.get_item(
-            TableName=constants.DYNAMODB_TABLE_NAME,
+        db_item = table.get_item(
             Key=db_key,
             ProjectionExpression="moves" # Name of field for list of moves.
         )
