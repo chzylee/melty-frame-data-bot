@@ -12,7 +12,7 @@ class FrameData:
     moon: str
     char_name: str
     move_input: InputComponents
-    dynamodb: any # Defining property here but there is no type to describe with.
+    useDB: bool
 
     def _match_move_input(self) -> Union[InputComponents, None]:
         for matcher in inputreader.input_matchers:
@@ -25,7 +25,8 @@ class FrameData:
     def _get_full_char_name(self) -> str:
         return f"{self.moon}-{self.char_name}"
 
-    def __init__(self, data: dict, dynamodb = None):
+    # Default to False to prevent DB client usage outside of actual Lambda env.
+    def __init__(self, data: dict, useDB: bool = False):
         # Command inputs defined in this order.
         self.moon = data["options"][0]["value"]
         self.char_name = str(data["options"][1]["value"]).capitalize()
@@ -33,10 +34,11 @@ class FrameData:
         if move_input is None:
             raise UserInputException(f"Invalid move input '{move_input}'")
         self.move_input = InputComponents.from_string(move_input)
-        self.dynamodb = dynamodb
+        self.useDB = useDB
 
     def _query_frame_data(self) -> MoveFrameData:
-        table = self.dynamodb.Table(constants.DYNAMODB_TABLE_NAME)
+        dynamodb = boto3.resource('dynamodb', region_name='us-east-2')
+        table = dynamodb.Table(constants.DYNAMODB_TABLE_NAME)
         moon_path = mizuumi.get_moon_path(self.moon)
         char_path = mizuumi.get_char_path(self.char_name)
         db_key = {
@@ -56,8 +58,8 @@ class FrameData:
     def get_frame_data(self) -> List[Embed]:
         char_wiki_url = mizuumi.get_character_url(self.char_name, self.moon)
         # TODO: use framedata after testing
-        if self.dynamodb is not None:
-            print("DynamoDB client found. Proceeding to query frame data.")
+        if self.useDB:
+            print("Set to use DB. Proceeding to query frame data.")
             framedata = self._query_frame_data()
 
         # TODO: replace with real data

@@ -54,9 +54,12 @@ def lambda_handler(event, context):
         command_name = data["name"]
         logger.log_command(command_name)
 
-        dynamodb_client = dbclient.get_dynamodb_client()
-
-        response = bot.process_bot_command(data, command_name, dynamodb_client)
+        # Passing useDB flag instead of dynamodb client
+        # to enable DB client setup only as needed as some commands do not need DB.
+        response = bot.process_bot_command(
+            data=data,
+            command_name=command_name,
+            useDB=True) # Should use DB when Lambda is triggered.
 
     logger.log_response(response)
     return response
