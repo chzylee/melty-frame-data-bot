@@ -3,13 +3,14 @@ from nacl.exceptions import BadSignatureError
 import constants
 import logger
 import bot
+import dbclient
 
 def verify_signature(event):
     raw_body = event["rawBody"]
     verify_key = VerifyKey(bytes.fromhex(constants.PUBLIC_KEY))
     auth_sig = event["params"]["header"].get("x-signature-ed25519")
     auth_ts  = event["params"]["header"].get("x-signature-timestamp")
-    
+
     try:
         verify_key.verify(f"{auth_ts}{raw_body}".encode(), bytes.fromhex(auth_sig))
     except BadSignatureError:
@@ -30,7 +31,7 @@ def is_ping_pong(body: dict) -> bool:
 
 def lambda_handler(event, context):
     print(f"event {event}") # debug print
-    
+
     # verify the signature
     try:
         verify_signature(event)
@@ -39,7 +40,7 @@ def lambda_handler(event, context):
 
     if not is_lambda_request_event(event):
         return { "message": "Request is not Lambda event: 'body-json' not found" }
-    
+
     body = event["body-json"]
     message_content = None
     reponse = None
@@ -52,7 +53,10 @@ def lambda_handler(event, context):
         data = body["data"]
         command_name = data["name"]
         logger.log_command(command_name)
-        response = bot.process_bot_command(data, command_name)
+
+        dynamodb_client = dbclient.get_dynamodb_client()
+
+        response = bot.process_bot_command(data, command_name, dynamodb_client)
 
     logger.log_response(response)
     return response

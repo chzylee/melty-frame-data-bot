@@ -12,6 +12,7 @@ class FrameData:
     moon: str
     char_name: str
     move_input: InputComponents
+    dynamodb: any # Defining property here but there is no type to describe with.
 
     def _match_move_input(self) -> Union[InputComponents, None]:
         for matcher in inputreader.input_matchers:
@@ -24,7 +25,7 @@ class FrameData:
     def _get_full_char_name(self) -> str:
         return f"{self.moon}-{self.char_name}"
 
-    def __init__(self, data: dict):
+    def __init__(self, data: dict, dynamodb = None):
         # Command inputs defined in this order.
         self.moon = data["options"][0]["value"]
         self.char_name = str(data["options"][1]["value"]).capitalize()
@@ -32,6 +33,7 @@ class FrameData:
         if move_input is None:
             raise UserInputException(f"Invalid move input '{move_input}'")
         self.move_input = InputComponents.from_string(move_input)
+        self.dynamodb = dynamodb
 
     def _query_frame_data(self) -> MoveFrameData:
         dynamodb = boto3.client('dynamodb', region_name='us-east-2')
@@ -54,7 +56,8 @@ class FrameData:
     def get_frame_data(self) -> List[Embed]:
         char_wiki_url = mizuumi.get_character_url(self.char_name, self.moon)
         # TODO: use framedata after testing
-        framedata = self._query_frame_data()
+        if self.dynamodb is not None:
+            framedata = self._query_frame_data()
 
         # TODO: replace with real data
         framedata_embed = Embed(

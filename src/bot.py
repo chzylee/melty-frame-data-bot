@@ -7,7 +7,7 @@ from commands.framedata import FrameData
 from models.errors import UserInputException
 
 
-def process_bot_command(data: dict, command_name: str) -> dict:
+def process_bot_command(data: dict, command_name: str, dynamodb = None) -> dict:
     message_content = None
     reponse = None
     embeds = []
@@ -21,7 +21,7 @@ def process_bot_command(data: dict, command_name: str) -> dict:
             message_content = CharacterList.get_allowed_names()
         elif command_name == "framedata":
             logger.log_command_match(command_name)
-            framedata = FrameData(data)
+            framedata = FrameData(data, dynamodb)
             embeds = framedata.get_frame_data()
         else:
             logger.log_command_match_error(command_name)
