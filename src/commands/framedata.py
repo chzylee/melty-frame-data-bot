@@ -44,7 +44,6 @@ class FrameData:
         print(f"Sending request to '{char_wiki_url}'")
         wiki_response = requests.get(char_wiki_url)
         print(f"Wiki response: {wiki_response}")
-        print(f"Wiki response: {wiki_response.text}")
         wiki_soup = BeautifulSoup(markup=wiki_response.text, features="html.parser")
         print("Instantiated BeautifulSoup")
         # TODO: make request to this url and get data.
