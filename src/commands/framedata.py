@@ -3,7 +3,7 @@ from bs4 import BeautifulSoup
 from data import mizuumi
 from typing import List, Union
 from discord import Embed
-from data import inputs
+from data import inputreader
 from models.errors import UserInputException
 from models.framedata import MoveFrameData
 from models.inputcomponents import InputComponents
@@ -14,7 +14,7 @@ class FrameData:
     move_input: InputComponents
 
     def _match_move_input(self) -> Union[InputComponents, None]:
-        for matcher in inputs.input_matchers:
+        for matcher in inputreader.input_matchers:
             match_result = matcher(input=self.move_input)
             if match_result is not None:
                 return match_result
@@ -41,12 +41,11 @@ class FrameData:
 
     def get_frame_data(self) -> List[Embed]:
         char_wiki_url = mizuumi.get_character_url(self.char_name, self.moon)
-        print(f"Sending request to '{char_wiki_url}'")
-        wiki_response = requests.get(char_wiki_url)
-        print(f"Wiki response: {wiki_response}")
-        wiki_soup = BeautifulSoup(markup=wiki_response.text, features="html.parser")
-        print("Instantiated BeautifulSoup")
-        # TODO: make request to this url and get data.
+        # print(f"Sending request to '{char_wiki_url}'")
+        # wiki_response = requests.get(char_wiki_url)
+        # print(f"Wiki response: {wiki_response}")
+        # wiki_soup = BeautifulSoup(markup=wiki_response.text, features="html.parser")
+        # TODO: refactor after dynamoDB data is uploaded.
 
         # TODO: replace with real data
         framedata_embed = Embed(

@@ -1,6 +1,6 @@
 import re
 from typing import Union
-from data import inputs
+from data import inputreader
 
 class InputComponents:
     air: Union[str, None]
@@ -50,9 +50,9 @@ class InputComponents:
     # Charged normals are organized differently, so they arent considered plain normals.
     def is_normal(self) -> bool:
         if (
-            inputs.match_ground_normal(str(self)) or
-            inputs.match_air_normal(str(self)) or
-            inputs.match_air_cmd_normal(str(self))
+            inputreader.match_ground_normal(str(self)) or
+            inputreader.match_air_normal(str(self)) or
+            inputreader.match_air_cmd_normal(str(self))
         ) and not self.is_charged():
             return True
         return False
