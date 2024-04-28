@@ -44,6 +44,7 @@ class FrameData:
             constants.DYNAMODB_PARTITION_KEY: { "S": char_path },
             constants.DYNAMODB_SORT_KEY: { "S": moon_path }
         }
+        print(f"DynamoDB request with key: {db_key}")
         db_item = dynamodb.get_item(
             TableName=constants.DYNAMODB_TABLE_NAME,
             Key=db_key,
@@ -57,6 +58,7 @@ class FrameData:
         char_wiki_url = mizuumi.get_character_url(self.char_name, self.moon)
         # TODO: use framedata after testing
         if self.dynamodb is not None:
+            print("DynamoDB client found. Proceeding to query frame data.")
             framedata = self._query_frame_data()
 
         # TODO: replace with real data
