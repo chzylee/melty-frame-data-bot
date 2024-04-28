@@ -30,7 +30,7 @@ def log_command_match_error(command_name: str):
 
 def log_command_processing_exception(command_name: str, exception: Exception):
     logging.exception(
-        message = f"{COMMAND_ERROR_TAG} Error processing command '{command_name}'",
+        msg = f"{COMMAND_ERROR_TAG} Error processing command '{command_name}'",
         exc_info = exception
     )
 
@@ -39,4 +39,4 @@ def log_user_input_exception(command_name: str, exception: UserInputException):
 
 def log_exception(message: str, exception: Exception):
     print(f"{GENERAL_ERROR_TAG} {message}")
-    logging.exception(message, exc_info=exception)
+    logging.exception(msg=message, exc_info=exception)
