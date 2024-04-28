@@ -14,10 +14,13 @@ def process_bot_command(data: dict, command_name: str) -> dict:
 
     try:
         if command_name == "teatime":
+            logger.log_command_match(command_name)
             message_content = TeaTime.have_teatime()
         elif command_name == "characterlist":
+            logger.log_command_match(command_name)
             message_content = CharacterList.get_allowed_names()
         elif command_name == "framedata":
+            logger.log_command_match(command_name)
             framedata = FrameData(data)
             embeds = framedata.get_frame_data()
         else:
@@ -30,6 +33,7 @@ def process_bot_command(data: dict, command_name: str) -> dict:
         embeds = [] # Empty embeds to return just error message
     except Exception as e:
         logger.log_command_processing_exception(command_name, e)
+        raise e
 
     try:
         logger.log_message_data(message_content, embeds)

@@ -8,6 +8,9 @@ COMMAND_ERROR_TAG = "[COMMAND_ERROR] |"
 GENERAL_ERROR_TAG = "[ERROR] |"
 
 def log_command(command_name: str):
+    print(f"{INFO_TAG} Received command '{command_name}'")
+
+def log_command_match(command_name: str):
     print(f"{INFO_TAG} Matched command '{command_name}'")
 
 def log_message_data(message_content: str, embeds: List[Embed]):

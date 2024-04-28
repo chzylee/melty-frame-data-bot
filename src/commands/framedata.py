@@ -41,7 +41,9 @@ class FrameData:
 
     def get_frame_data(self) -> List[Embed]:
         char_wiki_url = mizuumi.get_character_url(self.char_name, self.moon)
+        print(f"Sending request to '{char_wiki_url}'")
         wiki_response = requests.get(char_wiki_url)
+        print(f"Wiki response: {wiki_response}")
         wiki_soup = BeautifulSoup(markup=wiki_response.text, features="html.parser")
         # TODO: make request to this url and get data.
 
