@@ -13,6 +13,9 @@ def log_command(command_name: str):
 def log_command_match(command_name: str):
     print(f"{INFO_TAG} Matched command '{command_name}'")
 
+def log_command_finished(command_name: str):
+    print(f"{INFO_TAG} Finished processing command {command_name}")
+
 def log_message_data(message_content: str, embeds: List[Embed]):
     print(f"{INFO_TAG} Message content: '{message_content}'")
     print("Embeds:")
