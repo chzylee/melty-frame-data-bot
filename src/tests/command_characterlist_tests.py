@@ -7,3 +7,6 @@ class TestCharacterList(unittest.TestCase):
         self.assertIsInstance(char_list, str)
         self.assertGreater(len(char_list), 0)
         self.assertIn(",", char_list)
+
+if __name__ == '__main__':
+    unittest.main()

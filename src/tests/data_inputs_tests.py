@@ -77,3 +77,6 @@ class TestInputReader(unittest.TestCase):
     def test_match_air_special_given_invalid_input_returns_None(self):
         input = InputReader.match_air_special("j2B") # Not valid air special notation.
         self.assertIsNone(input)
+
+if __name__ == '__main__':
+    unittest.main()

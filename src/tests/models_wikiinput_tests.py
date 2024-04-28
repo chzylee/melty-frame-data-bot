@@ -58,3 +58,6 @@ class TestWikiInputComponents(unittest.TestCase):
         self.assertIsNotNone(input.air)
         self.assertEqual(input.directions, "22")
         self.assertEqual(input.button, "X")
+
+if __name__ == '__main__':
+    unittest.main()

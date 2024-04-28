@@ -16,3 +16,6 @@ class TestMizuumi(unittest.TestCase):
         moon = "C"
         with self.assertRaises(UserInputException):
             mizuumi.get_character_url(char, moon)
+
+if __name__ == '__main__':
+    unittest.main()

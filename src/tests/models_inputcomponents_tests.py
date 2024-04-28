@@ -115,3 +115,6 @@ class TestInputComponents(unittest.TestCase):
     def test_to_string_given_air_special_returns_correct_format(self):
         input = InputComponents(air="j.", directions="236", button="C")
         self.assertEqual(str(input), "j.236C")
+
+if __name__ == '__main__':
+    unittest.main()
