@@ -1,4 +1,5 @@
 class MoveFrameData:
+    input: str
     first_active: str
     active: str
     recovery: str
@@ -9,6 +10,7 @@ class MoveFrameData:
     # All properties required.
     def __init__(
         self,
+        input: str,
         first_active: str,
         active: str,
         recovery: str,
@@ -16,6 +18,7 @@ class MoveFrameData:
         proration: str,
         invuln: str
     ):
+        self.input = input
         self.first_active = first_active
         self.active = active
         self.recovery = recovery

@@ -1,5 +1,5 @@
-import requests
-from bs4 import BeautifulSoup
+import boto3
+import constants
 from data import mizuumi
 from typing import List, Union
 from discord import Embed
@@ -33,19 +33,28 @@ class FrameData:
             raise UserInputException(f"Invalid move input '{move_input}'")
         self.move_input = InputComponents.from_string(move_input)
 
-    def _parse_frame_data_from_wiki(self, soup: BeautifulSoup) -> MoveFrameData:
-        # Inputs are labeled differently on wiki pages for charged moves and specials.
-        move_search_tag = "small" if self.move_input.is_charged() or self.move_input.is_special() else "big"
-        input_labels = [tag.text for tag in soup.find_all(move_search_tag)]
+    def _query_frame_data(self) -> MoveFrameData:
+        dynamodb = boto3.client('dynamodb')
+        moon_path = mizuumi.get_moon_path(self.moon)
+        char_path = mizuumi.get_char_path(self.char_name)
+        db_key = {
+            # "S" => string value
+            constants.DYNAMODB_PARTITION_KEY: { "S": char_path },
+            constants.DYNAMODB_SORT_KEY: { "S": moon_path }
+        }
+        db_item = dynamodb.get_item(
+            TableName=constants.DYNAMODB_TABLE_NAME,
+            Key=db_key,
+            ProjectionExpression="moves" # Name of field for list of moves.
+        )
+        move_list = db_item["Item"]
+        print(f"From DynamoDB: {move_list}")
         return
 
     def get_frame_data(self) -> List[Embed]:
         char_wiki_url = mizuumi.get_character_url(self.char_name, self.moon)
-        # print(f"Sending request to '{char_wiki_url}'")
-        # wiki_response = requests.get(char_wiki_url)
-        # print(f"Wiki response: {wiki_response}")
-        # wiki_soup = BeautifulSoup(markup=wiki_response.text, features="html.parser")
-        # TODO: refactor after dynamoDB data is uploaded.
+        # TODO: use framedata after testing
+        framedata = self._query_frame_data()
 
         # TODO: replace with real data
         framedata_embed = Embed(

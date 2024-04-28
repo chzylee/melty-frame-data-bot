@@ -60,7 +60,7 @@ CHAR_MAPPINGS = {
     "w-len": "White_Len"
 }
 
-def get_character_url(char_name: str, moon: str):
+def get_character_url(char_name: str, moon: str) -> str:
     if char_name.lower() not in CHAR_MAPPINGS:
         raise UserInputException(f"Name '{char_name}' not allowed.")
     # No need to validate moon because values are limited to specific choices by bot command.
@@ -68,3 +68,9 @@ def get_character_url(char_name: str, moon: str):
     char_path = CHAR_MAPPINGS[char_name.lower()]
     moon_path = _MOON_MAPPINGS[moon]
     return f"https://wiki.gbl.gg/w/Melty_Blood/MBAACC/{char_path}/{moon_path}"
+
+def get_moon_path(moon: str) -> str:
+    return _MOON_MAPPINGS[moon]
+
+def get_char_path(char_name: str) -> str:
+    return CHAR_MAPPINGS[char_name.lower()]
