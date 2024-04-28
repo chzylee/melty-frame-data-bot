@@ -34,7 +34,7 @@ class FrameData:
         self.move_input = InputComponents.from_string(move_input)
 
     def _query_frame_data(self) -> MoveFrameData:
-        dynamodb = boto3.client('dynamodb')
+        dynamodb = boto3.client('dynamodb', region_name='us-east-2')
         moon_path = mizuumi.get_moon_path(self.moon)
         char_path = mizuumi.get_char_path(self.char_name)
         db_key = {
