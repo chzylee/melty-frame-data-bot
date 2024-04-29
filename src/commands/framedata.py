@@ -12,7 +12,7 @@ class FrameData:
     moon: str
     char_name: str
     move_input: InputComponents
-    useDB: bool
+    dynamodb: any # No type label to specify for dynamodb resource
 
     def _match_move_input(self) -> Union[InputComponents, None]:
         for matcher in inputreader.input_matchers:
@@ -25,8 +25,7 @@ class FrameData:
     def _get_full_char_name(self) -> str:
         return f"{self.moon}-{self.char_name}"
 
-    # Default to False to prevent DB client usage outside of actual Lambda env.
-    def __init__(self, data: dict, useDB: bool = False):
+    def __init__(self, data: dict, dynamodb = None):
         # Command inputs defined in this order.
         self.moon = data["options"][0]["value"]
         self.char_name = str(data["options"][1]["value"]).capitalize()
@@ -34,15 +33,13 @@ class FrameData:
         if move_input is None:
             raise UserInputException(f"Invalid move input '{move_input}'")
         self.move_input = InputComponents.from_string(move_input)
-        self.useDB = useDB
+        self.dynamodb = dynamodb
 
     def _query_frame_data(self) -> MoveFrameData:
-        dynamodb = boto3.resource('dynamodb', region_name='us-east-2')
-        table = dynamodb.Table(constants.DYNAMODB_TABLE_NAME)
+        table = self.dynamodb.Table(constants.DYNAMODB_TABLE_NAME)
         moon_path = mizuumi.get_moon_path(self.moon)
         char_path = mizuumi.get_char_path(self.char_name)
         db_key = {
-            # "S" => string value
             constants.DYNAMODB_PARTITION_KEY: char_path ,
             constants.DYNAMODB_SORT_KEY: moon_path
         }
@@ -51,16 +48,23 @@ class FrameData:
             Key=db_key,
             ProjectionExpression="moves" # Name of field for list of moves.
         )
-        move_list = db_item["Item"]
-        print(f"From DynamoDB: {move_list}")
-        return
+        print(f"From DynamoDB: {db_item}")
+        # Projected "moves" field is a list of moves.
+        move_list = [MoveFrameData.from_dynamoDB_item(item) for item in db_item["Item"]["moves"]]
+        print(f"Parsed moves: {move_list}")
+
+        for move in move_list:
+            if move.input == str(self.move_input):
+                return move
+        return None # Should never occur but providing default to be safe.
 
     def get_frame_data(self) -> List[Embed]:
         char_wiki_url = mizuumi.get_character_url(self.char_name, self.moon)
         # TODO: use framedata after testing
-        if self.useDB:
+        if self.dynamodb is not None:
             print("Set to use DB. Proceeding to query frame data.")
-            framedata = self._query_frame_data()
+            move_framedata = self._query_frame_data()
+            print(f"Found frame data for {self.move_input}: {move_framedata}")
 
         # TODO: replace with real data
         framedata_embed = Embed(

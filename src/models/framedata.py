@@ -25,3 +25,17 @@ class MoveFrameData:
         self.frame_adv = frame_adv
         self.proration = proration
         self.invuln = invuln
+
+    @classmethod
+    def from_dynamoDB_item(cls, item: dict) -> "MoveFrameData":
+        # Realistically dict should always have all properties.
+        # Assuming this case and will handle errors if they arise.
+        return cls(
+            input = item["input"],
+            first_active = item["first_afirst_active"],
+            active = item["active"],
+            recovery = item["recovery"],
+            frame_adv = item["frame_adv"],
+            proration = item["proration"],
+            invuln = item["invuln"]
+        )
