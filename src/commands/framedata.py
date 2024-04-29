@@ -2,19 +2,29 @@ import constants
 from data import mizuumi
 from typing import List, Union
 from discord import Embed
-from data import inputreader
+from data import inputreader as InputReader
 from models.errors import UserInputException
 from models.moveframedata import MoveFrameData
-from models.inputcomponents import InputComponents
 
 class FrameData:
     moon: str
     char_name: str
-    move_input: InputComponents
+    move_input: str
     dynamodb: any # No type label to specify for dynamodb resource
 
-    def _match_move_input(self) -> Union[InputComponents, None]:
-        for matcher in inputreader.input_matchers:
+    def _format_move_input(self) -> str:
+        input_start_index = 0
+        prefix = ""
+        if self.move_input[0].lower() == "j":
+            prefix = "j" # Ensure air moves always start with lowercase j.
+            input_start_index = 1
+            if self.move_input[1] != ".":
+                prefix += "." # Index 1 includes present "." if found, but we add it this way if not present.
+        # Reamining part of move_input should be A/B/C/D at the end and should be capitalized.
+        formatted_move = f"{prefix}{self.move_input[input_start_index:].upper()}"
+
+    def _match_move_input(self) -> Union[str, None]:
+        for matcher in InputReader.input_matchers:
             match_result = matcher(input=self.move_input)
             if match_result is not None:
                 return match_result
@@ -31,7 +41,7 @@ class FrameData:
         move_input = data["options"][2]["value"]
         if move_input is None:
             raise UserInputException(f"Invalid move input '{move_input}'")
-        self.move_input = InputComponents.from_string(move_input)
+        self.move_input = InputReader.format_move_input(move_input)
         self.dynamodb = dynamodb
 
     def _query_frame_data(self) -> MoveFrameData:

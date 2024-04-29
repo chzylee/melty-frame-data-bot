@@ -22,9 +22,7 @@ class TestFrameData(unittest.TestCase):
         self.assertIsNotNone(framedata.move_input)
         self.assertEqual(framedata.moon, moon)
         self.assertEqual(framedata.char_name, character)
-        self.assertEqual(str(framedata.move_input), move_input)
-        self.assertEqual(framedata.move_input.directions, "3")
-        self.assertEqual(framedata.move_input.button, "C")
+        self.assertEqual(framedata.move_input, move_input)
 
     def test_get_frame_data_successfully_gets_move_data_returns_fully_populated_embed(self):
         moon = "C"
