@@ -1,11 +1,10 @@
-import boto3
 import constants
 from data import mizuumi
 from typing import List, Union
 from discord import Embed
 from data import inputreader
 from models.errors import UserInputException
-from models.framedata import MoveFrameData
+from models.moveframedata import MoveFrameData
 from models.inputcomponents import InputComponents
 
 class FrameData:
@@ -48,23 +47,26 @@ class FrameData:
             Key=db_key,
             ProjectionExpression="moves" # Name of field for list of moves.
         )
-        print(f"From DynamoDB: {db_item}")
         # Projected "moves" field is a list of moves.
         move_list = [MoveFrameData.from_dynamoDB_item(item) for item in db_item["Item"]["moves"]]
-        print(f"Parsed moves: {move_list}")
-
+        print(f"Parsed moves from DB: {move_list}")
         for move in move_list:
+            print(f"Attempting to match move {move}")
             if move.input == str(self.move_input):
+                print(f"Successfully matched with input '{self.move_input}'")
                 return move
+        print(f"Failed to match move '{self.move_input}' with move list from DB")
         return None # Should never occur but providing default to be safe.
 
     def get_frame_data(self) -> List[Embed]:
         char_wiki_url = mizuumi.get_character_url(self.char_name, self.moon)
-        # TODO: use framedata after testing
         if self.dynamodb is not None:
             print("Set to use DB. Proceeding to query frame data.")
             move_framedata = self._query_frame_data()
-            print(f"Found frame data for {self.move_input}: {move_framedata}")
+            if move_framedata is not None:
+                print(f"Found frame data for {self.move_input}: {move_framedata}")
+            else:
+                raise Exception(f"Failed to get frame data for {self._get_full_char_name()} {self.move_input}")
 
         # TODO: replace with real data
         framedata_embed = Embed(

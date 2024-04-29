@@ -26,6 +26,20 @@ class MoveFrameData:
         self.proration = proration
         self.invuln = invuln
 
+    def to_dict(self):
+        return {
+            "input": self.input,
+            "first_active": self.first_active,
+            "active": self.active,
+            "recovery": self.recovery,
+            "frame_adv": self.frame_adv,
+            "proration": self.proration,
+            "invuln": self.invuln
+        }
+
+    def __str__(self):
+        return str(self.to_dict())
+
     @classmethod
     def from_dynamoDB_item(cls, item: dict) -> "MoveFrameData":
         # Realistically dict should always have all properties.
