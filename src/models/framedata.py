@@ -32,7 +32,7 @@ class MoveFrameData:
         # Assuming this case and will handle errors if they arise.
         return cls(
             input = item["input"],
-            first_active = item["first_afirst_active"],
+            first_active = item["first_active"],
             active = item["active"],
             recovery = item["recovery"],
             frame_adv = item["frame_adv"],
