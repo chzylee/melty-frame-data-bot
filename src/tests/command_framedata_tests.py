@@ -66,6 +66,7 @@ class TestFrameData(unittest.TestCase):
         frame_adv = "-2 (TK)"
         proration = "100%"
         invuln = "Full 1-13"
+        image = "https://wiki.gbl.gg/images/thumb/3/32/Clenj236c.png/175px-Clenj236c.png"
         test_data = {
             # Data should be indexed by Name and Moon used in wiki url path.
             # This treats the wiki paths as the source of truth for names.
@@ -79,7 +80,8 @@ class TestFrameData(unittest.TestCase):
                     "recovery": recovery,
                     "frame_adv": frame_adv,
                     "proration": proration,
-                    "invuln": invuln
+                    "invuln": invuln,
+                    "image": image
                 }
             ]
         }
@@ -105,6 +107,7 @@ class TestFrameData(unittest.TestCase):
         self.assertEqual(embed.title, "C-Len j.236C") # Standard name format for moves
         self.assertGreater(len(embed.url), 0)
         self.assertIsNotNone(embed.image)
+        self.assertEqual(embed.image.url, image)
 
         # Should have Startup, Active, Recovery, Frame Adv, Proration.
         self.assertEqual(len(embed.fields), 6)

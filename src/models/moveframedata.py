@@ -6,6 +6,7 @@ class MoveFrameData:
     frame_adv: str
     proration: str
     invuln: str
+    image: str
 
     # All properties required.
     def __init__(
@@ -16,7 +17,8 @@ class MoveFrameData:
         recovery: str,
         frame_adv: str,
         proration: str,
-        invuln: str
+        invuln: str,
+        image: str
     ):
         self.input = input
         self.first_active = first_active
@@ -25,6 +27,7 @@ class MoveFrameData:
         self.frame_adv = frame_adv
         self.proration = proration
         self.invuln = invuln
+        self.image = image
 
     def to_dict(self):
         return {
@@ -34,7 +37,8 @@ class MoveFrameData:
             "recovery": self.recovery,
             "frame_adv": self.frame_adv,
             "proration": self.proration,
-            "invuln": self.invuln
+            "invuln": self.invuln,
+            "image": self.image
         }
 
     def __str__(self):
@@ -51,5 +55,6 @@ class MoveFrameData:
             recovery = item["recovery"],
             frame_adv = item["frame_adv"],
             proration = item["proration"],
-            invuln = item["invuln"]
+            invuln = item["invuln"],
+            image = item["image"]
         )

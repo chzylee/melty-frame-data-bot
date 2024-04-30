@@ -78,7 +78,8 @@ class TestBotProcess(unittest.TestCase):
                     "recovery": "6",
                     "frame_adv": "-2 (TK)",
                     "proration": "100%",
-                    "invuln": "Full 1-13"
+                    "invuln": "Full 1-13",
+                    "image": "https://wiki.gbl.gg/images/thumb/3/32/Clenj236c.png/175px-Clenj236c.png"
                 }
             ]
         }

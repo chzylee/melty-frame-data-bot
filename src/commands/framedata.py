@@ -76,7 +76,7 @@ class FrameData:
             title=f"{self._get_full_char_name()} {self.move_input}",
             url=char_wiki_url
         )
-        framedata_embed.set_image(url="https://wiki.gbl.gg/images/1/10/CLen_421D.png")
+        framedata_embed.set_image(url=move_framedata.image)
         framedata_embed.add_field(name="First Active", value=move_framedata.first_active)
         framedata_embed.add_field(name="Active", value=move_framedata.active)
         framedata_embed.add_field(name="Recovery", value=move_framedata.recovery)
