@@ -66,27 +66,21 @@ class FrameData:
                 print(f"Successfully matched with input '{self.move_input}'")
                 return move
         print(f"Failed to match move '{self.move_input}' with move list from DB")
-        return None # Should never occur but providing default to be safe.
+        raise Exception(f"Failed to get frame data for {self._get_full_char_name()} {self.move_input}")
 
     def get_frame_data(self) -> List[Embed]:
         char_wiki_url = mizuumi.get_character_url(self.char_name, self.moon)
-        if self.dynamodb is not None:
-            print("Set to use DB. Proceeding to query frame data.")
-            move_framedata = self._query_frame_data()
-            if move_framedata is not None:
-                print(f"Found frame data for {self.move_input}: {move_framedata}")
-            else:
-                raise Exception(f"Failed to get frame data for {self._get_full_char_name()} {self.move_input}")
+        move_framedata = self._query_frame_data()
 
-        # TODO: replace with real data
         framedata_embed = Embed(
             title=f"{self._get_full_char_name()} {self.move_input}",
             url=char_wiki_url
         )
         framedata_embed.set_image(url="https://wiki.gbl.gg/images/1/10/CLen_421D.png")
-        framedata_embed.add_field(name="First Active", value="6")
-        framedata_embed.add_field(name="Active", value="7")
-        framedata_embed.add_field(name="Recovery", value="24")
-        framedata_embed.add_field(name="Frame Adv", value="-13")
-        framedata_embed.add_field(name="Proration", value="78%")
+        framedata_embed.add_field(name="First Active", value=move_framedata.first_active)
+        framedata_embed.add_field(name="Active", value=move_framedata.active)
+        framedata_embed.add_field(name="Recovery", value=move_framedata.recovery)
+        framedata_embed.add_field(name="Frame Adv", value=move_framedata.frame_adv)
+        framedata_embed.add_field(name="Proration", value=move_framedata.proration)
+        framedata_embed.add_field(name="Invuln", value=move_framedata.invuln)
         return [framedata_embed]
