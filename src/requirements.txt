@@ -1,3 +1,4 @@
-requests
+boto3
 pynacl
 discord.py
+moto

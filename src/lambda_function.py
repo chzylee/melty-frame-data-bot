@@ -2,37 +2,36 @@ from nacl.signing import VerifyKey
 from nacl.exceptions import BadSignatureError
 import constants
 import logger
-from data_helpers import converters
-from commands import teatime, framedata
+import bot
+import dbclient
 
 def verify_signature(event):
     raw_body = event["rawBody"]
     verify_key = VerifyKey(bytes.fromhex(constants.PUBLIC_KEY))
     auth_sig = event["params"]["header"].get("x-signature-ed25519")
     auth_ts  = event["params"]["header"].get("x-signature-timestamp")
-    
+
     try:
         verify_key.verify(f"{auth_ts}{raw_body}".encode(), bytes.fromhex(auth_sig))
     except BadSignatureError:
         raise Exception("Verification failed")
 
 
-def is_lambda_request_event(event):
+def is_lambda_request_event(event) -> bool:
     if event["body-json"]:
         return True
     return False
 
 
-def is_ping_pong(body):
+def is_ping_pong(body: dict) -> bool:
     if body["type"]:
         if body["type"] == 1:
             return True
     return False
 
-
 def lambda_handler(event, context):
     print(f"event {event}") # debug print
-    
+
     # verify the signature
     try:
         verify_signature(event)
@@ -41,45 +40,26 @@ def lambda_handler(event, context):
 
     if not is_lambda_request_event(event):
         return { "message": "Request is not Lambda event: 'body-json' not found" }
-    
+
     body = event["body-json"]
     message_content = None
     reponse = None
     embeds = []
 
-    if is_ping_pong(body):
+    if is_ping_pong(body): # Discord uses "ping pong" message to verify bot.
         print("is_ping_pong: True")
         response = constants.PING_PONG
     else:
         data = body["data"]
         command_name = data["name"]
-        logger.log_command(command_name=command_name)
+        logger.log_command(command_name)
 
-        try:
-            if command_name == "teatime":
-                message_content = teatime.have_teatime()
-            elif command_name == "framedata":
-                char_move = framedata.get_char_and_move(data)
-                message_content = framedata.get_move_message(char_move)
-                embeds.append(framedata.get_frame_data(char_move))
+        dynamodb = dbclient.get_dynamodb_resource()
 
-            if message_content == None:
-                logger.log_error(constants.COMMAND_NAME_ERROR_MESSAGE)
-        except Exception as e:
-            print("Error occurred: ", e)
-            message_content = f"Error occurred: {e}"
+        response = bot.process_bot_command(
+            data=data,
+            command_name=command_name,
+            dynamodb=dynamodb) # Should use DB when Lambda is triggered.
 
-        response = {
-            "type": constants.RESPONSE_TYPES["MESSAGE_WITH_SOURCE"],
-            "data": { 
-                "content": message_content,
-                "embeds": []
-            }
-        }
-        
-        if len(embeds) > 0:
-            for embed in embeds:
-                embed_json = converters.convert_embed_to_json(embed)
-                response["data"]["embeds"].append(embed_json)
-
+    logger.log_response(response)
     return response

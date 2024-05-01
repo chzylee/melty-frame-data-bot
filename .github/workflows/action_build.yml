@@ -43,8 +43,9 @@ jobs:
           echo "filename=$FILENAME" >> $GITHUB_OUTPUT
           echo "Zipping code into $FILENAME"
           cd src
-          zip -r ../$FILENAME *.py commands data_helpers
+          zip -r ../$FILENAME *.py commands data models
         # Put file in starting working directory.
+        # Need to add dirs to zip as needed to ensuer we zip only required code.
 
       - name: Check if file exists
         # This is to avoid overwriting releases. Overwriting dev deployments is safe.

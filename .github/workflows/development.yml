@@ -9,7 +9,7 @@ on:
 
 env:
   ENV: 'dev' # Environment should be static for each env's .yml file.
-  VERSION: '1.0.4' # Increment as needed. Dev releases will be deployed to separate lambda.
+  VERSION: '1.1.0' # Increment as needed. Dev releases will be deployed to separate lambda.
   APP_NAME: 'meltyframedatabot'
   LAMBDA_NAME: 'fgc-aacc-meltyframedatabot-dev'
 
