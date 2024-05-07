@@ -42,9 +42,6 @@ def lambda_handler(event, context):
         return { "message": "Request is not Lambda event: 'body-json' not found" }
 
     body = event["body-json"]
-    message_content = None
-    reponse = None
-    embeds = []
 
     if is_ping_pong(body): # Discord uses "ping pong" message to verify bot.
         print("is_ping_pong: True")
