@@ -11,6 +11,7 @@ _MOON_MAPPINGS = {
 # Keys set in all lowercase to simplify matching.
 CHAR_MAPPINGS = {
     "akiha": "Akiha_Tohno",
+    "aki": "Akiha_Tohno",
     "aoko": "Aoko_Aozaki",
     "arc": "Arcueid_Brunestud",
     "arcueid": "Arcueid_Brunestud",
@@ -22,11 +23,13 @@ CHAR_MAPPINGS = {
     "kohamech": "Koha_%26_Mech",
     "km": "Koha_%26_Mech",
     "kohaku": "Kohaku",
+    "koha": "Kohaku",
     "kouma": "Kouma_Kishima",
     "len": "Len",
     # "maids": "Hisui_%26_Kohaku", # Presetving % codes in routes to avoid errors.
     "mech": "Mech-Hisui",
     "miyako": "Miyako_Arima",
+    "miya": "Miyako_Arima",
     "nac": "Neco-Arc_Chaos",
     "nanaya": "Shiki_Nanaya",
     "neco": "Neco-Arc",
@@ -46,6 +49,7 @@ CHAR_MAPPINGS = {
     "ries": "Riesbyfe_Stridberg",
     "roa": "Roa",
     "ryougi": "Shiki_Ryougi",
+    "roog": "Shiki_Ryougi",
     "sats": "Satsuki_Yumizuka",
     "satsuki": "Satsuki_Yumizuka",
     "sei": "Akiha_Tohno_(Seifuku)",
