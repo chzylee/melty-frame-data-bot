@@ -117,7 +117,7 @@ class TestBotProcess(unittest.TestCase):
 
 
     @mock_aws
-    def test_process_bot_command_given_framedata_with_multiple_embeds_returns_all_embeds_response(self):
+    def test_process_bot_command_given_framedata_with_multiple_embeds_returns_multiple_moves_response(self):
         # Mock simulating real env.
         dynamodb = boto3.resource('dynamodb', region_name='us-east-2')
         table = dynamodb.create_table(
@@ -194,8 +194,8 @@ class TestBotProcess(unittest.TestCase):
         }
 
         response = bot.process_bot_command(data=data, command_name="framedata", dynamodb=dynamodb)
-
-        self.assertIsNone(response["data"]["content"])
+        message = response["data"]["content"]
+        self.assertIn("214C (Nero)", message)
 
         response_embeds = response["data"]["embeds"]
         self.assertIsInstance(response_embeds, List)

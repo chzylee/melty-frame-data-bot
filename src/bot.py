@@ -21,6 +21,8 @@ def process_bot_command(data: dict, command_name: str, dynamodb = None) -> dict:
             logger.log_command_match(command_name)
             framedata = FrameData(data, dynamodb)
             embeds = framedata.get_frame_data()
+            if len(embeds) > 1:
+                message_content = framedata.get_multiple_moves_message(embeds)
         else:
             logger.log_command_match_error(command_name)
 

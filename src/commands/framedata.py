@@ -87,3 +87,13 @@ class FrameData:
             embeds.append(framedata_embed)
 
         return embeds
+
+    def get_multiple_moves_message(self, move_embeds: List[Embed]) -> str:
+        message = "Associated move(s): "
+        for index in range(len(move_embeds)):
+            embed = move_embeds[index]
+            if index == 0:
+                message += ", "
+            message += embed.title
+
+        return message

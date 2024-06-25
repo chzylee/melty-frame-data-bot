@@ -3,6 +3,7 @@ import boto3
 import constants
 from moto import mock_aws
 from typing import List
+from discord import Embed
 from models.errors import UserInputException
 from commands.framedata import FrameData
 
@@ -41,6 +42,26 @@ class TestFrameData(unittest.TestCase):
         }
         with self.assertRaises(UserInputException):
             framedata = FrameData(data)
+
+    def test_get_multiple_moves_message_given_multiple_move_embeds_returns_message_with_embed_titles(self):
+        data = {
+            "options": [
+                # Input order is moon, char name, move input
+                { "value": "Crescent" },
+                { "value": "Warachia" },
+                { "value": "214C" }
+            ]
+        }
+        framedata = FrameData(data)
+
+        # Simulate case for Wara 214C which has the summon data and data for the summoned Nero
+        embeds = [
+            Embed(title="C-Warachia 214C"),
+            Embed(title="C-Warachia 214C (Nero)")
+        ]
+
+        message = framedata.get_multiple_moves_message(embeds)
+        self.assertIn("C-Warachia 214C (Nero)", message)
 
     @mock_aws
     def test_get_frame_data_given_char_and_move_in_db_returns_data_in_populated_embed(self):
