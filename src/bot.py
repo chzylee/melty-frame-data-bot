@@ -1,7 +1,6 @@
 
 import logger
 import constants
-from commands import teatime as TeaTime
 from commands import characterlist as CharacterList
 from commands.framedata import FrameData
 from models.errors import UserInputException
@@ -13,10 +12,7 @@ def process_bot_command(data: dict, command_name: str, dynamodb = None) -> dict:
     embeds = []
 
     try:
-        if command_name == "teatime":
-            logger.log_command_match(command_name)
-            message_content = TeaTime.have_teatime()
-        elif command_name == "characterlist":
+        if command_name == "characterlist":
             logger.log_command_match(command_name)
             message_content = CharacterList.get_allowed_names()
         elif command_name == "framedata":
