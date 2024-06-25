@@ -33,6 +33,11 @@ class TestBotProcess(unittest.TestCase):
         response = bot.process_bot_command({}, "characterlist")
         self.assertGreater(len(response["data"]["content"]), 0)
 
+    def test_process_bot_command_given_howtoframedata_command_returns_text_message(self):
+        # Passing empty data as it should not be needed
+        response = bot.process_bot_command({}, "howtoframedata")
+        self.assertGreater(len(response["data"]["content"]), 0)
+
     @mock_aws
     def test_process_bot_command_given_framedata_command_with_options_returns_framedata_response(self):
         # Mock simulating real env.

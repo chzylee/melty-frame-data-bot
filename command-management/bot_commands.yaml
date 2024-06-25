@@ -1,5 +1,5 @@
-- name: teatime
-  description: Test command.
+- name: howtoframedata
+  description: Gives instructions for using the bot.
   options: []
 
 - name: framedata
