@@ -12,7 +12,7 @@ class TestMizuumi(unittest.TestCase):
         self.assertIn("Crescent_Moon", url)
 
     def test_get_character_url_given_invalid_char_name_throws_error(self):
-        char = "warakia" # Misspelled.
+        char = "warakkia" # Misspelled.
         moon = "C"
         with self.assertRaises(UserInputException):
             mizuumi.get_character_url(char, moon)

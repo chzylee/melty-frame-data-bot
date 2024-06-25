@@ -1,3 +1,5 @@
+from typing import List
+
 class MoveFrameData:
     input: str
     first_active: str
@@ -7,6 +9,7 @@ class MoveFrameData:
     proration: str
     invuln: str
     image: str
+    alts: List[str]
 
     # All properties required.
     def __init__(
@@ -18,7 +21,8 @@ class MoveFrameData:
         frame_adv: str,
         proration: str,
         invuln: str,
-        image: str
+        image: str,
+        alts: List[str]
     ):
         self.input = input
         self.first_active = first_active
@@ -28,6 +32,7 @@ class MoveFrameData:
         self.proration = proration
         self.invuln = invuln
         self.image = image
+        self.alts = alts
 
     def to_dict(self):
         return {
@@ -38,7 +43,8 @@ class MoveFrameData:
             "frame_adv": self.frame_adv,
             "proration": self.proration,
             "invuln": self.invuln,
-            "image": self.image
+            "image": self.image,
+            "alts": self.alts
         }
 
     def __str__(self):
@@ -56,5 +62,6 @@ class MoveFrameData:
             frame_adv = item["frame_adv"],
             proration = item["proration"],
             invuln = item["invuln"],
-            image = item["image"]
+            image = item["image"],
+            alts = item["alts"]
         )

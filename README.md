@@ -6,7 +6,7 @@ Discord bot to query MBAACC frame data from Mizuumi.
 
 This bot runs via AWS Lambda hooked into a Discord bot via Interactions Endpoint URL. Python code from [src](./src/) is built and deployed via GitHub Actions workflows, and we update the code using a .zip package pushed to S3.
 
-PyNaCl was imported for verification with Discord via Lambda Layers. The Layer consumes nacl.zip from S3, which is a zipped PyNaCl installed and packaged on EC2 instance via Python 3.8.
+PyNaCl was imported for verification with Discord via Lambda Layers. The Layer consumes nacl.zip from S3, which is a zipped PyNaCl installed and packaged on EC2 instance via Python 3.12 on ARM64 architecture..
 
 ### CI/CD
 
@@ -24,6 +24,10 @@ Build and Deploy workflows have conditional steps to handle different environmen
 - Command logic will go in [/commands](./src/commands/).
   - Can import commands using `from commands import <command_filename>`
 - [data_helpers/](./src/data_helpers/) contains utilities to help manage use of Discord data models.
+
+### Data
+
+When running on Lambda, the bot will be pulling data from DynamoDB. Data was uploaded using [mizuumi-frame-data-scraper](https://github.com/chzylee/mizuumi-frame-data-scraper)
 
 ## Update Commands
 

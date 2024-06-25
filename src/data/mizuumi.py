@@ -56,6 +56,7 @@ CHAR_MAPPINGS = {
     "vsion": "Sion_TATARI",
     "wara": "Warachia",
     "warachia": "Warachia",
+    "warakia": "Warachia",
     "wlen": "White_Len",
     "w-len": "White_Len"
 }
@@ -74,3 +75,9 @@ def get_moon_path(moon: str) -> str:
 
 def get_char_path(char_name: str) -> str:
     return CHAR_MAPPINGS[char_name.lower()]
+
+def is_char_name_valid(char_name: str) -> bool:
+    if char_name.lower() in CHAR_MAPPINGS:
+        return True
+    # Valid names are all keys in the mapping dict.
+    return False
