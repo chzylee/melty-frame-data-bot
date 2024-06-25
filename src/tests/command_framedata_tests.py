@@ -47,7 +47,7 @@ class TestFrameData(unittest.TestCase):
         data = {
             "options": [
                 # Input order is moon, char name, move input
-                { "value": "Crescent" },
+                { "value": "C" },
                 { "value": "Warachia" },
                 { "value": "214C" }
             ]
@@ -60,8 +60,13 @@ class TestFrameData(unittest.TestCase):
             Embed(title="C-Warachia 214C (Nero)")
         ]
 
-        message = framedata.get_multiple_moves_message(embeds)
-        self.assertIn("C-Warachia 214C (Nero)", message)
+        # Simulating realistic case as this method should be called with only additional moves.
+        message_realistic = framedata.get_multiple_moves_message(embeds[1:])
+        self.assertEqual(message_realistic, f"Associated move(s): 214C (Nero)")
+
+        # Unrealistic but testing with both embeds to verify behavior.
+        message_full = framedata.get_multiple_moves_message(embeds)
+        self.assertEqual(message_full, f"Associated move(s): 214C, 214C (Nero)")
 
     @mock_aws
     def test_get_frame_data_given_char_and_move_in_db_returns_data_in_populated_embed(self):

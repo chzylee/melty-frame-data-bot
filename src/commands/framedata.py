@@ -92,8 +92,10 @@ class FrameData:
         message = "Associated move(s): "
         for index in range(len(move_embeds)):
             embed = move_embeds[index]
-            if index == 0:
+            if index > 0:
                 message += ", "
-            message += embed.title
+            # Filter out char name part of title as it is redundant with listing associated moves.
+            message += embed.title.replace(f"{self._get_full_char_name()} ", "")
 
+        message = message
         return message
