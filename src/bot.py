@@ -1,4 +1,3 @@
-
 import logger
 import constants
 from commands import characterlist as CharacterList

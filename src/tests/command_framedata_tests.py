@@ -343,6 +343,94 @@ class TestFrameData(unittest.TestCase):
         self.assertEqual(embed.fields[5].value, invuln)
         self.assertTrue(all(field.inline for field in embed.fields))
 
+    @mock_aws
+    def test_get_frame_data_given_input_matching_multiple_moves_in_db_returns_data_in_populated_embed(self):
+        # Mock simulating real env.
+        dynamodb = boto3.resource('dynamodb', region_name='us-east-2')
+        table = dynamodb.create_table(
+            TableName=constants.DYNAMODB_TABLE_NAME,
+            KeySchema=[
+                {
+                    'AttributeName': constants.DYNAMODB_PARTITION_KEY,
+                    'KeyType': 'HASH'
+                },
+                {
+                    'AttributeName': constants.DYNAMODB_SORT_KEY,
+                    'KeyType': 'RANGE'
+                },
+            ],
+            AttributeDefinitions=[
+                {
+                    'AttributeName': constants.DYNAMODB_PARTITION_KEY,
+                    'AttributeType': 'S'
+                },
+                {
+                    'AttributeName': constants.DYNAMODB_SORT_KEY,
+                    'AttributeType': 'S'
+                },
+            ],
+            ProvisionedThroughput={
+                'ReadCapacityUnits': 5,
+                'WriteCapacityUnits': 5
+            }
+        )
+
+        test_data = {
+            # Data should be indexed by Name and Moon used in wiki url path.
+            # This treats the wiki paths as the source of truth for names.
+            constants.DYNAMODB_PARTITION_KEY: "Warachia",
+            constants.DYNAMODB_SORT_KEY: "Crescent_Moon",
+            "moves": [
+                {
+                    "input": "214C",
+                    "image": "https://wiki.gbl.gg/images/thumb/c/c9/MBCWarachia214C.png/175px-MBCWarachia214C.png",
+                    "first_active": "-",
+                    "active": "49",
+                    "recovery": "-",
+                    "frame_adv": "-",
+                    "proration": "-",
+                    "invuln": "-",
+                    "alts": []
+                },
+                {
+                    "input": "214C (Nero)",
+                    "image": "https://wiki.gbl.gg/images/thumb/c/c9/MBCWarachia214C.png/175px-MBCWarachia214C.png",
+                    "first_active": "75",
+                    "active": "3",
+                    "recovery": "-",
+                    "frame_adv": "-",
+                    "proration": "80% (O)",
+                    "invuln": "-",
+                    "alts": ["214C", "214C Nero", "214 Nero", "Nero Summon"]
+                }
+            ]
+        }
+        table.put_item(Item=test_data)
+
+        move_input = "214C"
+        moon = "C"
+        character = "Warachia"
+        data = {
+            "options": [
+                # Input order is moon, char name, move input
+                { "value": moon },
+                { "value": character },
+                { "value": move_input }
+            ]
+        }
+        framedata = FrameData(data=data, dynamodb=dynamodb)
+
+        embeds = framedata.get_frame_data()
+        self.assertIsInstance(embeds, List)
+        self.assertEqual(len(embeds), 2)
+        embed1 = embeds[0]
+        embed2 = embeds[1]
+
+        self.assertIn("C-Warachia", embed1.title) # Ensure embed titles contain char name.
+        self.assertIn("C-Warachia", embed2.title)
+        # Won't check both are fully populated to keep test light. Leaving that to other tests
+
+
 
 if __name__ == '__main__':
     unittest.main()

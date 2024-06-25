@@ -106,6 +106,92 @@ class TestBotProcess(unittest.TestCase):
 
         response_embeds = response["data"]["embeds"]
         self.assertIsInstance(response_embeds, List)
-        self.assertEqual(len(response_embeds), 1) # 1 for image and 1 for framedata.
+        self.assertEqual(len(response_embeds), 1)
         # Check Embed is dict to ensure this method returned JSON serializable data.
         self.assertIsInstance(response_embeds[0], dict)
+
+
+    @mock_aws
+    def test_process_bot_command_given_framedata_with_multiple_embeds_returns_all_embeds_response(self):
+        # Mock simulating real env.
+        dynamodb = boto3.resource('dynamodb', region_name='us-east-2')
+        table = dynamodb.create_table(
+            TableName=constants.DYNAMODB_TABLE_NAME,
+            KeySchema=[
+                {
+                    'AttributeName': constants.DYNAMODB_PARTITION_KEY,
+                    'KeyType': 'HASH'
+                },
+                {
+                    'AttributeName': constants.DYNAMODB_SORT_KEY,
+                    'KeyType': 'RANGE'
+                },
+            ],
+            AttributeDefinitions=[
+                {
+                    'AttributeName': constants.DYNAMODB_PARTITION_KEY,
+                    'AttributeType': 'S'
+                },
+                {
+                    'AttributeName': constants.DYNAMODB_SORT_KEY,
+                    'AttributeType': 'S'
+                },
+            ],
+            ProvisionedThroughput={
+                'ReadCapacityUnits': 5,
+                'WriteCapacityUnits': 5
+            }
+        )
+
+        test_data = {
+            # Data should be indexed by Name and Moon used in wiki url path.
+            # This treats the wiki paths as the source of truth for names.
+            constants.DYNAMODB_PARTITION_KEY: "Warachia",
+            constants.DYNAMODB_SORT_KEY: "Crescent_Moon",
+            "moves": [
+                {
+                    "input": "214C",
+                    "image": "https://wiki.gbl.gg/images/thumb/c/c9/MBCWarachia214C.png/175px-MBCWarachia214C.png",
+                    "first_active": "-",
+                    "active": "49",
+                    "recovery": "-",
+                    "frame_adv": "-",
+                    "proration": "-",
+                    "invuln": "-",
+                    "alts": []
+                },
+                {
+                    "input": "214C (Nero)",
+                    "image": "https://wiki.gbl.gg/images/thumb/c/c9/MBCWarachia214C.png/175px-MBCWarachia214C.png",
+                    "first_active": "75",
+                    "active": "3",
+                    "recovery": "-",
+                    "frame_adv": "-",
+                    "proration": "80% (O)",
+                    "invuln": "-",
+                    "alts": ["214C", "214C Nero", "214 Nero", "Nero Summon"]
+                }
+            ]
+        }
+        table.put_item(Item=test_data)
+        # Copied data from a request from integration testing.
+        # Even if not all fields are used, using this to simulate realistic case.
+        data = {
+            "guild_id": "1232882434857631755",
+            "id": "1232889478297948221",
+            "name": "framedata",
+            "options": [
+                { "name": "moon", "type": 3, "value": "C" },
+                { "name": "character", "type": 3, "value": "Warachia" },
+                { "name": "move", "type": 3, "value": "214C" }
+            ],
+            "type": 1
+        }
+
+        response = bot.process_bot_command(data=data, command_name="framedata", dynamodb=dynamodb)
+
+        self.assertIsNone(response["data"]["content"])
+
+        response_embeds = response["data"]["embeds"]
+        self.assertIsInstance(response_embeds, List)
+        self.assertEqual(len(response_embeds), 2)
