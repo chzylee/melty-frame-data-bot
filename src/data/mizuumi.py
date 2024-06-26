@@ -32,6 +32,7 @@ CHAR_MAPPINGS = {
     "miya": "Miyako_Arima",
     "nac": "Neco-Arc_Chaos",
     "nanaya": "Shiki_Nanaya",
+    "nana": "Shiki_Nanaya",
     "neco": "Neco-Arc",
     "neco-mech": "Neco_%26_Mech", # Support original and common spellings.
     "neco mech": "Neco_%26_Mech",
