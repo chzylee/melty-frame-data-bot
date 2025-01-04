@@ -1,11 +1,11 @@
+import os
 from nacl.signing import VerifyKey
 from nacl.exceptions import BadSignatureError
-import constants
 
 # Discord needs to verify bot application.
 def verify_signature(event):
     raw_body = event["rawBody"]
-    verify_key = VerifyKey(bytes.fromhex(constants.PUBLIC_KEY))
+    verify_key = VerifyKey(bytes.fromhex(os.environ["PUBLIC_KEY"]))
     auth_sig = event["params"]["header"].get("x-signature-ed25519")
     auth_ts  = event["params"]["header"].get("x-signature-timestamp")
 
