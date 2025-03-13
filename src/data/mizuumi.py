@@ -26,7 +26,8 @@ CHAR_MAPPINGS = {
     "koha": "Kohaku",
     "kouma": "Kouma_Kishima",
     "len": "Len",
-    # "maids": "Hisui_%26_Kohaku", # Presetving % codes in routes to avoid errors.
+    # maids commented for now because they havent been added to db yet.
+    # "maids": "Hisui_%26_Kohaku", # Preserving % codes in routes to avoid errors.
     "mech": "Mech-Hisui",
     "miyako": "Miyako_Arima",
     "miya": "Miyako_Arima",
@@ -45,9 +46,11 @@ CHAR_MAPPINGS = {
     "nrvnqsr": "Nero_Chaos",
     "pciel": "Powered_Ciel",
     "p-ciel": "Powered_Ciel",
+    "pcl": "Powered_Ciel",
     "red arcueid": "Red_Arcueid",
     "red arc": "Red_Arcueid",
     "warc": "Red_Arcueid",
+    "riesbyfe": "Riesbyfe_Stridberg",
     "ries": "Riesbyfe_Stridberg",
     "roa": "Roa",
     "mike": "Roa",
