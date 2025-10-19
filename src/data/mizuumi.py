@@ -89,8 +89,8 @@ CHAR_MAPPINGS = {
     "warakia": "Warachia",
     "white len": "White_Len",
     "wlen": "White_Len",
-    "w-len": "White_Len"
-    "w len": "White_Len",
+    "w-len": "White_Len",
+    "w len": "White_Len"
 }
 
 def get_character_url(char_name: str, moon: str) -> str:
