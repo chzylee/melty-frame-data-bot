@@ -1,6 +1,7 @@
 import logger
 import constants
 from commands import characterlist as CharacterList
+from commands import report as Report
 from commands.framedata import FrameData
 from models.errors import UserInputException
 
@@ -14,10 +15,13 @@ def process_bot_command(data: dict, command_name: str, dynamodb = None) -> dict:
         if command_name == "howtoframedata":
             message_content = "Select moon and input char name and move input (e.g. 236C, 236A~236B, ~214X Ender)."
             message_content += "\nIf the first command fails, press up and try again. Sometimes first try fails."
-            message_content += "\nContact @enpicie on discord about any issues."
+            message_content += "\nFound missing or wrong data? Use `/report` to flag it, or contact @enpicie on discord."
         elif command_name == "characterlist":
             logger.log_command_match(command_name)
             message_content = CharacterList.get_allowed_names()
+        elif command_name == "report":
+            logger.log_command_match(command_name)
+            message_content = Report.get_report_message()
         elif command_name == "framedata":
             logger.log_command_match(command_name)
             framedata = FrameData(data, dynamodb)

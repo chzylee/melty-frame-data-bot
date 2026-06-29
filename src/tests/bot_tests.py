@@ -38,6 +38,11 @@ class TestBotProcess(unittest.TestCase):
         response = bot.process_bot_command({}, "howtoframedata")
         self.assertGreater(len(response["data"]["content"]), 0)
 
+    def test_process_bot_command_given_report_command_returns_form_link(self):
+        # Passing empty data as it should not be needed
+        response = bot.process_bot_command({}, "report")
+        self.assertIn(constants.REPORT_FORM_URL, response["data"]["content"])
+
     @mock_aws
     def test_process_bot_command_given_framedata_command_with_options_returns_framedata_response(self):
         # Mock simulating real env.

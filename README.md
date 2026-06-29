@@ -31,6 +31,22 @@ When running on Lambda, the bot will be pulling data from DynamoDB. Data was upl
 
 Discord bot Public Key is stored in Lambda environment variables to ensure code deployed to prod and dev bots can run without environment-specific code updates.
 
+## Reporting Issues
+
+The `/report` command gives users a link to a Google Form for reporting missing or
+incorrect frame data. Form responses land in the form's linked Google Sheet, which acts
+as the review queue. To triage, sort/filter the sheet and delete junk rows; the form's
+auto-timestamp and any identity field you add make it easy to weed out time-wasters.
+
+Setup (one time):
+
+1. Create a Google Form (suggested fields: character, moon, move input, what's
+   wrong/missing, and optionally Discord username for accountability).
+2. Copy its share link (e.g. `https://forms.gle/...`).
+3. Paste it into `REPORT_FORM_URL` in [constants.py](./src/constants.py).
+4. Deploy, then run [update_commands.py](./command-management/update_commands.py) to
+   register the new `/report` slash command with Discord.
+
 ## Update Commands
 
 [update_commands.py](./command-management/update_commands.py) is a script calling the endpoint needed in order to update Slash Commands. As of April 2024, these are only updateable via request to this endpoint. Script will be update/run as needed. This has been based on guide [here](https://www.youtube.com/watch?v=BmtMr6Nmz9k).

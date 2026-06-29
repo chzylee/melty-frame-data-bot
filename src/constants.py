@@ -10,3 +10,8 @@ RESPONSE_TYPES =  {
 DYNAMODB_TABLE_NAME = "MBAACC-Frame-Data"
 DYNAMODB_PARTITION_KEY = "character_name"
 DYNAMODB_SORT_KEY = "moon"
+
+# Google Form used to collect frame data issue reports. Responses land in the
+# form's linked Google Sheet, which acts as the review queue.
+# Replace the placeholder below with your published form's share link.
+REPORT_FORM_URL = "https://forms.gle/tnEANYYhw4jSTHxj9"

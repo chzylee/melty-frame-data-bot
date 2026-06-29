@@ -28,3 +28,7 @@
 - name: characterlist
   description: Gets list of character names allowed as input to framedata.
   options: []
+
+- name: report
+  description: Get a link to report missing or incorrect frame data.
+  options: []
